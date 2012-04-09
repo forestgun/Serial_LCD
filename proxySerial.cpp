@@ -1,25 +1,22 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
 // Arduino 1.0 Library
+// ----------------------------------
 //
-// Mar 19, 2012 release 207
+// Apr 09, 2012 release 207
 // see README.txt
 //
 // © Rei VILO, 2010-2012
 // CC = BY NC SA
 // http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+// http://embeddedcomputing.weebly.com/serial-lcd.html
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-
 #include "Stream.h"
 #include "proxySerial.h"
 
@@ -171,9 +168,10 @@ void ProxySerial::print(char c) {
     _proxyPort->write((uint8_t)c); 
 };
 void ProxySerial::print(String s) { 
-    for (uint8_t i=0; i<s.length(); i++)         {
+    for (uint8_t i=0; i<s.length(); i++) {
         _checkSpeed();  
-        _proxyPort->write(s.charAt(i));  }
+        _proxyPort->write(s.charAt(i));  
+    }
 }
 
 uint8_t ProxySerial::read() { 

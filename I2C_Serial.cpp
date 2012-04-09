@@ -1,19 +1,22 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
 // Arduino 1.0 Library
+// ----------------------------------
 //
-// SC16IS750 I2C slave bridge to serial
-//
-// Mar 19, 2012 release 204
+// Apr 09, 2012 release 204
 // see README.txt
 //
 // © Rei VILO, 2010-2012
 // CC = BY NC SA
 // http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+// http://embeddedcomputing.weebly.com/serial-lcd.html
 //
 //
-
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
+//
+//
 #include "Wire.h"
 #include "I2C_Serial.h"
 #include "Stream.h"

@@ -2,23 +2,19 @@
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
 // Arduino 1.0 Library
 // ----------------------------------
-// Developped with embedXcode
 //
-// Mar 19, 2012 release 202
+// Apr 09, 2012 release 202
 // see README.txt
 //
 // © Rei VILO, 2010-2012
 // CC = BY NC SA
 // http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+// http://embeddedcomputing.weebly.com/serial-lcd.html
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
 #define GALLERY_RELEASE 202
