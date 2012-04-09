@@ -1,25 +1,21 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 1.0 Library
+// Arduino 0023 chipKIT MPIDE 0023 Library
+// ----------------------------------
 //
-// Mar 19, 2012 release 223
+// Apr 09, 2012 release 124
 // see README.txt
 //
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
-//
-
+#include "WProgram.h"
 #include "proxySerial.h"
 #include "Serial_LCD.h"
 
@@ -101,17 +97,18 @@ uint8_t Serial_LCD::setSpeed(uint16_t speed) {
     uint8_t a=0x06;
     if      (speed==(uint16_t)  9600) a=0x06;
     else if (speed==(uint16_t) 19200) a=0x08;
-    else if (speed==(uint16_t) 28800) a=0x09;
     else if (speed==(uint16_t) 38400) a=0x0a;  // max for Arduino
     else if (speed==(uint16_t) 57600) a=0x0c;
     else if (speed==(uint16_t)115200) a=0x0d;  // ok with chipKIT
+    //  else if (speed==(uint16_t)256000) a=0x0f;  
     else return 0x15;
     
     if (a != 0x06) {
         _port->print('Q');
         _port->print((uint8_t)a); 
         while (!_port->available());
-        a=_port->read();     
+        a=_port->read();
+        
     }
     a=0x06;
     return a;
@@ -178,6 +175,7 @@ void Serial_LCD::off() {
     setDisplay(false);   // display off
     
     while (_port->available()) _port->read();
+    
     _port->print('Q');    // reset to default speed
     _port->print((char)0x06);    // 
     delay(10);
@@ -245,7 +243,7 @@ uint8_t Serial_LCD::setTouch(boolean b) {
         if (c==0x06) {
             _port->print('Y');
             _port->print((char)0x05);  // full screen active
-            _port->print((char)0x02);   // according with the 4D manual should be 0x02.
+            _port->print((char)0x02);
         }
     } 
     else {
@@ -484,7 +482,8 @@ uint8_t Serial_LCD::setFontSolid(boolean b) {
     _port->print('O');
     _port->print(b ? (char)0x01 : (char)0x00);
     return nacAck();
-}
+} 
+
 
 uint8_t Serial_LCD::tText(uint8_t x, uint8_t y, String s, uint16_t colour) {
     _port->print('s');
@@ -498,18 +497,18 @@ uint8_t Serial_LCD::tText(uint8_t x, uint8_t y, String s, uint16_t colour) {
 }
 
 
-uint8_t Serial_LCD::gText(uint16_t x, uint16_t y, String s, uint16_t colour) {
+uint8_t Serial_LCD::gText(uint16_t x, uint16_t y, String s, uint16_t colour, uint8_t ix, uint8_t iy) {   // Draw “String” of ASCII Text (graphics format) – 53hex 
     _port->print('S');
     _port->printXY(x);    // in graphic units
     _port->printXY(y);
     _port->print(_font);
     _port->print(colour);
-    _port->print((char)0x01);   // multiplier
-    _port->print((char)0x01);
+    _port->print((uint8_t)ix);   // multiplier
+    _port->print((uint8_t)iy);
     _port->print(s);
     _port->print((char)0x00);
     return nacAck();
-}
+}  
 
 
 // Touch
@@ -525,8 +524,10 @@ uint8_t Serial_LCD::getTouchActivity() {
     _port->print((char)0x04);   // state
     
     uint8_t i=0; 
-    delay(10);    // delay required by chipKIT
-    while ((_port->available()) && (i<4)) {
+//    delay(10);    // delay required by chipKIT
+//    while ((_port->available()) && (i<4)) {
+    while (_port->available() != 4);
+    while (i < 4) {
         _touch_buffer[i]=_port->read();
         i++;
     }
@@ -548,8 +549,10 @@ uint8_t Serial_LCD::getTouchXY(uint16_t &x, uint16_t &y) {
     _port->print((char)0x05);   // coordinates
     
     uint8_t i=0; 
-    delay(10);    // delay required by chipKIT
-    while (_port->available() && (i<4)) {
+//    delay(10);    // delay required by chipKIT
+//    while (_port->available() && (i<4)) {
+    while (_port->available() != 4);
+    while (i < 4) {
         _touch_buffer[i]=_port->read();
         i++;
     }
@@ -623,10 +626,9 @@ uint8_t Serial_LCD::initSD() {
         // Method 3 - specific function
         _port->print('z');
         a = _port->read();
-        if (bitRead(a, 7)) _checkedSD = true;  // uSD card present
+        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
         if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
         if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
-        
         //      if (bitRead(a, 4)) Serial.print("FAT partition is protected");Serial.print("\n");
         //      if (bitRead(a, 3)) Serial.print("New Image format Enabled");Serial.print("\n");
         
@@ -656,6 +658,7 @@ uint8_t Serial_LCD::protectFAT(boolean b) {
     _port->print((b) ? (char)0x01 : (char)0x00);
     return nacAck();
 }
+
 
 uint8_t Serial_LCD::checkScreenType() {
     return _checkedScreenType;
@@ -980,22 +983,19 @@ uint8_t Serial_LCD::findFile(String filename) {
     _port->print(filename);
     _port->print((char)0x00);
     
-    while (!_port->available());
-    
     char c;
     String s="";  
     boolean flag = false;
     
     while (!flag) {
         if (_port->available()) {
-            delay(2);
             c = _port->read();  
             flag = ( (c==0x06) || (c==0x15) || (c==0x0a) );
             if (!flag) s = s + String(c);
         }
     }
     while ( (c!=0x06) && (c!=0x15) ) c = _port->read();  
-    
+
     if (s.length()==0) return 0x15;
     if (filename.equalsIgnoreCase(s.substring(0, (s.indexOf(c))))) return 0x06 ;
     return 0x15;
@@ -1088,10 +1088,12 @@ uint32_t Serial_LCD::getSectors(uint16_t x, uint16_t y, uint16_t sizeSector) {
     return n;
 }
 
+
 uint16_t Serial_LCD::setColour(uint8_t red8, uint8_t green8, uint8_t blue8) {
     // rgb16 = red5 green6 blue5
     return (red8 >> 3) << 11 | (green8 >> 2) << 5 | (blue8 >> 3);
 }
+
 
 void Serial_LCD::splitColour(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t &blue) {
     // rgb16 = red5 green6 blue5
@@ -1100,11 +1102,13 @@ void Serial_LCD::splitColour(uint16_t rgb, uint8_t &red, uint8_t &green, uint8_t
     blue  = (rgb & 0b0000000000011111)       << 3;
 }
 
+
 uint16_t Serial_LCD::halfColour(uint16_t rgb) {
     // rgb16 = red5 green6 blue5 
     return (rgb & 0b1111100000000000) >> 12 << 11 | \
     (rgb & 0b0000011111100000) >> 6 << 5 | \
-    (rgb & 0b0000000000011111) >> 1;    
+    (rgb & 0b0000000000011111) >> 1;
+    
 }
 
 uint16_t Serial_LCD::reverseColour(uint16_t rgb) {

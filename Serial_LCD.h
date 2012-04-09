@@ -1,35 +1,31 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 1.0 Library
+// Arduino 0023 chipKIT MPIDE 0023 Library
+// ----------------------------------
 //
-// Mar 19, 2012 release 223
+// Apr 09, 2012 release 124
 // see README.txt
 //
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
-//
-#define SERIAL_LCD_RELEASE 223
+#define SERIAL_LCD_RELEASE 124
 
 #ifndef Serial_LCD_h
 #define Serial_LCD_h
 
-#include "Arduino.h"
+#include "WProgram.h"
 #include "proxySerial.h"
 
 // Test release
-#if PROXYSERIAL_RELEASE < 207
-#error required PROXYSERIAL_RELEASE 207
+#if PROXYSERIAL_RELEASE < 106
+#error required PROXYSERIAL_RELEASE 106
 #endif
 
 
@@ -87,10 +83,11 @@ public:
     uint8_t triangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t colour);  // Draw Triangle – 47hex 
     
     // Draw Image-Icon – 49hex 
-    uint8_t setBackGroundColour(uint16_t colour);   // Set Background colour – 4Bhex 
+    uint8_t setBackGroundColour(uint16_t colour=blackColour);   // Set Background colour – 4Bhex 
     uint8_t dLine(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, uint16_t colour);  // Draw Line – 4Chex 
     uint8_t line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour);  // Draw Line – 4Chex 
-                                                                                        // Draw Polygon – 67hex 
+    
+    // Draw Polygon – 67hex 
     uint8_t rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour);  // Draw Rectangle – 72hex 
     uint8_t dRectangle(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, uint16_t colour);  // Draw Rectangle – 72hex 
     uint8_t ellipse(uint16_t x, uint16_t y, uint16_t rx, uint16_t ry, uint16_t colour); // Draw Ellipse – 65hex 
@@ -104,10 +101,11 @@ public:
     // 2.3 Text Commands
     uint8_t setFont(uint8_t b=0);  // Set Font – 46hex 
     uint8_t setFontSolid(boolean b=true);  // Set 0=Transparent-1=Opaque Text – 4Fhex 
-                                           // Draw ASCII Character (text format) – 54hex 
-                                           // Draw ASCII Character (graphics format) – 74hex 
+    
+    // Draw ASCII Character (text format) – 54hex 
+    // Draw ASCII Character (graphics format) – 74hex 
     uint8_t tText(uint8_t x, uint8_t y, String s, uint16_t colour=whiteColour);  // Draw “String” of ASCII Text (text format) – 73hex 
-    uint8_t gText(uint16_t x, uint16_t y, String s, uint16_t colour=whiteColour);    // Draw “String” of ASCII Text (graphics format) – 53hex 
+    uint8_t gText(uint16_t x, uint16_t y, String s, uint16_t colour=whiteColour, uint8_t ix=1, uint8_t iy=1);    // Draw “String” of ASCII Text (graphics format) – 53hex 
     
     // Draw Text Button – 62hex
     
@@ -115,8 +113,7 @@ public:
     // Touch screen must be enabled to be able to use the touch commands. 
     uint8_t getTouchActivity();   // Get Touch Coordinates - 6Fhex - 0 : No Touch Activity 1 : Touch Press 2 : Touch Release 3 : Touch Moving
     uint8_t getTouchXY(uint16_t &x, uint16_t &y);   // Get Touch Coordinates - 6Fhex 
-    
-    // Wait Until Touch - 77hex 
+                                                    // Wait Until Touch - 77hex 
     uint8_t dDetectTouchRegion(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy);
     uint8_t detectTouchRegion(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2); // Detect Touch Region - 75hex
     
@@ -152,6 +149,7 @@ public:
     // Read File from Card (FAT) - @61hex with call-back
     uint8_t readTextFileDelimiter(String filename, char delimiter, void (*cbReadFile)(String text));
     uint8_t readTextFile(String filename, uint8_t bytes, void (*cbReadFile)(String text));
+    
     // Write File to Card (FAT) - @74hex 
     uint8_t writeStringFile(String filename, String text, uint8_t option=0x00);   
     uint8_t appendStringFile(String filename, String text);

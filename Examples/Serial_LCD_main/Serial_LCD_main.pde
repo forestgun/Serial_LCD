@@ -1,7 +1,7 @@
 // 
-// 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 1.0 Library
-// 
+// μLCD-32PT(SGC) 3.2” Serial LCD Display Module
+// Arduino & chipKIT Library
+//
 // Example - see README.txt
 // © Rei VILO, 2010-2012
 // CC = BY NC SA
@@ -18,30 +18,49 @@
 //
 //
 
-#include "Arduino.h"
-#include "Wire.h"
-#include "Serial_LCD.h"
+
 #include "proxySerial.h"
+#include "Serial_LCD.h"
 
 // test release
-#if SERIAL_LCD_RELEASE < 223
-#error required SERIAL_LCD_RELEASE 223
+#if SERIAL_LCD_RELEASE < 118
+#error required SERIAL_LCD_RELEASE 118
 #endif
 
 // === Serial port choice ===
-// --- Arduino Uno - software serial
-#if defined (__AVR_ATmega328P__) 
-#include "SoftwareSerial.h"
-SoftwareSerial Serial3(2, 3); // RX, TX
 
-// --- Arduino mega2560 - hardware serial
-#elif defined (__AVR_ATmega2560__)
-#endif
+// uncomment for I2C serial interface
+//#define __I2C_Serial__
+
+// --- I2C Case -
+#if defined(__I2C_Serial__)
+#include "Wire.h"
+#include "I2C_Serial.h"
+  // Test release
+  #if I2C_SERIAL_RELEASE < 103
+  #error required I2C_SERIAL_RELEASE 103
+  #endif
+I2C_Serial mySerial(0);
+ProxySerial myPort(&mySerial);
+
+// --- Arduino SoftwareSerial Case - Arduino only
+#elif defined(__AVR__)  || defined (__AVR_ATmega328P__)
+#include "NewSoftSerial.h"
+NewSoftSerial mySerial(2, 3); // RX, TX
+ProxySerial myPort(&mySerial);
+
+// --- chipKIT HardwareSerial Case - chipKIT
+#elif defined(__PIC32MX__) 
+ProxySerial myPort(&Serial1);
+
+#else
+#error Non defined board
+#endif 
+
 // === End of Serial port choice ===
 
-ProxySerial myPort(&Serial3);
-Serial_LCD myLCD(&myPort); 
 
+Serial_LCD myLCD( &myPort); 
 
 uint8_t aa;
 
@@ -50,39 +69,41 @@ void setup() {
   Serial.print("\n\n\n***\n");
 
   // === Serial port initialisation ===
-  // --- Arduino Uno - software serial
-#if defined (__AVR_ATmega328P__) 
-  Serial.print("software\n");
-  // --- Arduino mega2560 - hardware serial
-#elif defined (__AVR_ATmega2560__)
-  Serial.print("hardware\n");
-#endif
+#if defined(__I2C_Serial__)
+  Serial.print("i2c\n");
+  Wire.begin();
+  mySerial.begin(9600);
+
+#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
+  Serial.print("avr\n");
+  mySerial.begin(9600);
+
+#elif defined(__PIC32MX__) 
+  Serial.print("chipKIT\n");
+  Serial1.begin(9600);
+
+#endif 
   // === End of Serial port initialisation ===
 
-  Serial3.begin(9600);
+
   myLCD.begin();
-  
 
 delay(100);
   aa=myLCD.setOrientation(0x03);
 
 delay(100);
   Serial.print("\n line \t");
-  aa=myLCD.line(0,0,100,100, greenColour);
+  aa=myLCD.line(0,0,100,100, myLCD.setColour(0,255,0));
   Serial.print(aa, DEC);
 
 delay(100);
-  myLCD.setPenSolid(true);
   Serial.print("\n rectangle \t");
-  aa=myLCD.rectangle(239,0,319,256, redColour);
+  aa=myLCD.rectangle(239,0,319,256, myLCD.setColour(255,0,0));
   Serial.print(aa, DEC);
 
 delay(100);
-  myLCD.setPenSolid(false);
   Serial.print("\n circle \t");
-  aa=myLCD.circle(200,100, 50, blueColour);
-  aa=myLCD.circle(200,100, 49, blueColour);
-  aa=myLCD.circle(200,100, 47, blueColour);
+  aa=myLCD.circle(200,100, 50, myLCD.setColour(0,0,255));
   Serial.print(aa, DEC);
 
 delay(200);
@@ -92,7 +113,7 @@ delay(200);
 
 delay(100);
   Serial.print("\n gText \t");
-  aa=myLCD.gText(25, 25, "String", whiteColour);
+  aa=myLCD.gText(25, 25, 0xffff, "String");
   Serial.print(aa, DEC);
 
 delay(100);
@@ -106,6 +127,7 @@ delay(100);
 
   delay(100);
 
+delay(1000);
   Serial.print("\n triangle \t");
   aa=myLCD.triangle(160, 200, 80, 160, 60, 100, 0xffff);
   Serial.print(aa, DEC);

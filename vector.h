@@ -1,11 +1,24 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 1.0 Library
+// Arduino 0023 chipKIT MPIDE 0023 Library
+// ----------------------------------
 //
-// Container for objects like C++ vector
-// http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1289151491
+// Apr 09, 2012 release 101
+// see README.txt
 //
-
+// © Rei VILO, 2010-2012
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
+//
+// Based on
+//   Container for objects like C++ vector
+//   http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1289151491
+//
+//
 #ifndef _VECTOR_H
 #define _VECTOR_H
 

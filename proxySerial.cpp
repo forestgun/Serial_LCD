@@ -1,25 +1,21 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 1.0 Library
+// Arduino 0023 chipKIT MPIDE 0023 Library
+// ----------------------------------
 //
-// Mar 19, 2012 release 207
+// Apr 09, 2012 release 106
 // see README.txt
 //
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
-//
-
+#include "WProgram.h"
 #include "Stream.h"
 #include "proxySerial.h"
 
@@ -65,7 +61,7 @@ String ftoa(float number, uint8_t precision, uint8_t size) {
         while(frac1 /= 10)    padding--;
         while(padding--)      s += "0";
         
-        s += String(frac,DEC) ;  // prints the fractional part
+        s += String(frac, DEC) ;  // prints the fractional part
     }
     
     if ( (size>0) & (s.length()>size) )  return("#");
@@ -94,7 +90,6 @@ String ttoa(float number, uint8_t precision, uint8_t size) {
         return ftoa(number*0.001/60.0/60.0, precision, max(0, size-1)) + "h";
     }
 }
-
 
 String htoa(uint32_t number, uint8_t size) {
     String s = "";
@@ -134,46 +129,46 @@ void ProxySerial::setXY16(boolean b) {
 
 void ProxySerial::print(int8_t i) { 
     _checkSpeed();  
-    _proxyPort->write(i); 
+    _proxyPort->print(i); 
 }
 
 void ProxySerial::print(uint8_t ui) { 
     _checkSpeed();  
-    _proxyPort->write(ui); 
+    _proxyPort->print(ui); 
 };
 
 void ProxySerial::print(int16_t i) { 
     _checkSpeed();  
-    _proxyPort->write(highByte(i)); 
-    _proxyPort->write(lowByte(i)); 
-    
+    _proxyPort->print(highByte(i)); 
+    _proxyPort->print(lowByte(i)); 
 };
 
 void ProxySerial::print(uint16_t ui) { 
     _checkSpeed();  
-    _proxyPort->write(highByte(ui)); 
-    _proxyPort->write(lowByte(ui)); 
+    _proxyPort->print(highByte(ui)); 
+    _proxyPort->print(lowByte(ui)); 
 };
 
 void ProxySerial::printXY(int16_t i) { 
     _checkSpeed(); 
-    if ( _XY16 )   _proxyPort->write(highByte(i)); 
-    _proxyPort->write(lowByte(i)); 
+    if ( _XY16 )   _proxyPort->print(highByte(i)); 
+    _proxyPort->print(lowByte(i)); 
 };
 
 void ProxySerial::printXY(uint16_t ui) { 
     _checkSpeed();  
-    if ( _XY16 ) _proxyPort->write(highByte(ui)); 
-    _proxyPort->write(lowByte(ui)); 
+    if ( _XY16 ) _proxyPort->print(highByte(ui)); 
+    _proxyPort->print(lowByte(ui)); 
 };
 
 void ProxySerial::print(char c) { 
-    _proxyPort->write((uint8_t)c); 
+    _proxyPort->print((uint8_t)c); 
 };
 void ProxySerial::print(String s) { 
-    for (uint8_t i=0; i<s.length(); i++)         {
-        _checkSpeed();  
-        _proxyPort->write(s.charAt(i));  }
+    for (uint8_t i=0; i<s.length(); i++) {
+        //  _checkSpeed();  
+        _proxyPort->print(s.charAt(i));
+    }
 }
 
 uint8_t ProxySerial::read() { 

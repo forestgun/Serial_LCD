@@ -1,27 +1,21 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 1.0 Library
+// Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
-// Developped with embedXcode
 //
-// Mar 19, 2012 release 209
+// Apr 09, 2012 release 108
 // see README.txt
 //
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// https://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
-//
-
+#include "WProgram.h"
 #include "Serial_LCD.h"
 #include "Graphics.h"
 
@@ -442,7 +436,6 @@ void gHistogram::define(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2
     dDefine(lcd0, x1, y1, x2-x1, y2-y1, valueMin, valueMax, lapse, memory, gridX, gridY, continous, backColour, frontColour, gridColour, valueColour, minColour, maxColour);
 }
 
-
 void gHistogram::dDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, float valueMin, float valueMax, uint16_t lapse, uint16_t memory, uint16_t gridX, uint16_t gridY, boolean continous, uint16_t backColour, uint16_t frontColour, uint16_t gridColour, uint16_t valueColour, uint16_t minColour, uint16_t maxColour) {
 	_pscreen = lcd0;
 	
@@ -594,7 +587,7 @@ void gHistogram::draw(float value) {
 		if (l>_lapse) {
 			if (_gridY>0) {
 				_pscreen->setBackGroundColour(_frontColour);
-				_pscreen->gText(_x0+_dx-2-7*_pscreen->fontX(), _y0+_dy-2-_pscreen->fontY(), ttoa(l*_gridY/1000.0, 1, 7), _backColour);
+				_pscreen->gText(_x0+_dx-2-7*_pscreen->fontX(), _y0+_dy-2-_pscreen->fontY(), ttoa(l*_gridY, 1, 7), _backColour);
 				_pscreen->setBackGroundColour(_backColour);
 			} 
 			else {
@@ -606,7 +599,7 @@ void gHistogram::draw(float value) {
 		} 
 		else {
 			if (_gridY>0) {
-				_pscreen->gText(_x0+_dx-2-7*_pscreen->fontX(), _y0+_dy-2-_pscreen->fontY(), ttoa(l*_gridY/1000.0, 1, 7), _frontColour);
+				_pscreen->gText(_x0+_dx-2-7*_pscreen->fontX(), _y0+_dy-2-_pscreen->fontY(), ttoa(l*_gridY, 1, 7), _frontColour);
 			} 
 			else {
 				_pscreen->gText(_x0+_dx-2-7*_pscreen->fontX(), _y0+_dy-2-_pscreen->fontY(), ttoa(l, 0, 7), _frontColour);

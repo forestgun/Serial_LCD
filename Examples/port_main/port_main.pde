@@ -22,21 +22,16 @@
 #include "Serial_LCD.h"
 #include "proxySerial.h"
 #include "GUI.h"
-#include "Graphics.h"
 
 // test release
-#if GUI_RELEASE < 108
-#error required GUI_RELEASE 108
-#endif
-
-#if GRAPHICS_RELEASE < 107
-#error required GRAPHICS_RELEASE 107
+#if GUI_RELEASE < 23
+#error required GUI_RELEASE 23
 #endif
 
 // === Serial port choice ===
 
 // uncomment for I2C serial interface
-//#define __I2C_Serial__
+#define __I2C_Serial__
 
 // --- I2C Case -
 #if defined(__I2C_Serial__)
@@ -67,8 +62,7 @@ uint16_t x, y;
 uint32_t l;
 
 button b7;
-uint8_t a;
-gGauge myGauge;
+
 
 
 void setup() {
@@ -92,7 +86,7 @@ void setup() {
 #endif 
   // === End of Serial port initialisation ===
 
-  myLCD.begin(4);
+  myLCD.begin();
 
   Serial.print("begin\n");
 
@@ -101,7 +95,7 @@ void setup() {
 #if defined(__I2C_Serial__)
   mySerial.begin(38400);
 
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
+#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) || defined (__AVR_ATmega328P__)
   mySerial.begin(38400);
 
 #elif defined(__PIC32MX__) 
@@ -110,50 +104,58 @@ void setup() {
 #endif 
   // === End of Serial port speed change ===
 
+
   myLCD.setOrientation(0x03);
+
   myLCD.setPenSolid(true);
   myLCD.setFontSolid(true);
 
   myLCD.setFont(0);
-  myLCD.gText( 0, 225, 0xffff, myLCD.WhoAmI());
+  myLCD.gText( 0, 210, 0xffff, myLCD.WhoAmI());
+
   myLCD.setTouch(true);
 
   l=millis();
 
-  b7.dDefine(&myLCD, 0, 0, 70, 40, setItem(0, "Stop"), myLCD.setColour(0xff, 0xff, 0xff), myLCD.setColour(0xff, 0x00, 0x00), myLCD.setColour(0x88, 0x00, 0x00), 9);
+  b7.define(&myLCD, 0, 0, 79, 59, setItem(0, "Stop"), myLCD.setColour(0xff, 0xff, 0xff), myLCD.setColour(0xff, 0x00, 0x00), myLCD.setColour(0x88, 0x00, 0x00), 9);
+
   b7.enable(true);
   b7.draw();
 
-  myGauge.define(&myLCD, 169, 120, 60, -2.0, 2.0, 8, 8);
+  uint16_t chrono0, chrono1;
+  chrono0=millis();
+
+  myLCD.setPenSolid(false);
+  for (int i=0; i<10; i++) {
+    for (int j=0; j<10; j++) {
+      myLCD.circle(120+j*10, 30+i*10, 30, random(0, 0xffff));
+    }
+  }
+
+  chrono1=millis();
+  myLCD.gText( 0, 180, 0xffff, ftoa((chrono1-chrono0), 0, 10 ));
+
+  chrono0=millis();
+
+  myLCD.setPenSolid(true);
+  for (int i=0; i<10; i++) {
+    for (int j=0; j<10; j++) {
+      myLCD.circle(120+j*10, 30+i*10, 30, random(0, 0xffff));
+    }
+  }
+
+  chrono1=millis();
+  myLCD.gText( 160, 180, 0xffff, ftoa((chrono1-chrono0), 0, 10 ));
+
 }
 
-uint32_t ll = 0;
-uint16_t i = 0;
-float v;
+uint8_t c;
 
 void loop() {
 
-  //  // Solution 1
-  //  while (millis()-l<100) {
-  //    v = cos(i*PI/64.0) + 0.3*cos(i*PI/16.0+PI/8.0);
-  //    i++;
-  //    i %= 256;
-  //  }
+  c=myLCD.getTouchActivity();
 
-  // Solution 2
-  v = cos(i*PI/64.0) + 0.3*cos(i*PI/16.0+PI/8.0);
-  i++;
-  i %= 256;
-//  while (millis()-ll<100);
-
-  ll=millis();
-  myGauge.draw( v, ftoa(v, 2, 7) );
-
-//  myLCD.setFont(3);
-//  myLCD.setFontSolid(true);
-//  myLCD.gText( 160, 180, 0xffff, ftoa(v, 2, 10 ));
-
-  if (myLCD.getTouchActivity()>0) {
+  if (c>0) {
     myLCD.getTouchXY(x, y);
     myLCD.setFont(0);
     myLCD.gText(200, 0, 0xffff, ftoa(x, 0, 5)); 
@@ -163,19 +165,16 @@ void loop() {
     if (b7.check()) {
       myLCD.off();
       while(true);
-    } // quit
-  } // getTouchActivity
+    }
 
+
+
+  }
   myLCD.setFont(0);
   myLCD.setFontSolid(true);
-  myLCD.gText( 250, 225, 0xffff, ttoa(millis()-l, 0, 6));
+  myLCD.gText( 250, 225, 0xffff, ftoa(millis()-l, 0, 6));
   l=millis();
-
-  //  delay(100);
 }
-
-
-
 
 
 

@@ -25,12 +25,12 @@
 #include "Graphics.h"
 
 // test release
-#if GUI_RELEASE < 108
-#error required GUI_RELEASE 108
+#if GUI_RELEASE < 23
+#error required GUI_RELEASE 23
 #endif
 
-#if GRAPHICS_RELEASE < 107
-#error required GRAPHICS_RELEASE 107
+#if PROXYSERIAL_RELEASE < 106
+#error required PROXYSERIAL_RELEASE 106
 #endif
 
 // === Serial port choice ===
@@ -68,7 +68,7 @@ uint32_t l;
 
 button b7;
 uint8_t a;
-gGauge myGauge;
+gHistogram myHistogram;
 
 
 void setup() {
@@ -92,30 +92,30 @@ void setup() {
 #endif 
   // === End of Serial port initialisation ===
 
-  myLCD.begin(4);
+  myLCD.begin();
 
   Serial.print("begin\n");
 
-  // === Serial port speed change ===
-  myLCD.setSpeed(38400);
-#if defined(__I2C_Serial__)
-  mySerial.begin(38400);
-
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
-  mySerial.begin(38400);
-
-#elif defined(__PIC32MX__) 
-  Serial1.begin(38400);
-
-#endif 
-  // === End of Serial port speed change ===
+//  // === Serial port speed change ===
+//  myLCD.setSpeed(38400);
+//#if defined(__I2C_Serial__)
+//  mySerial.begin(38400);
+//
+//#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
+//  mySerial.begin(38400);
+//
+//#elif defined(__PIC32MX__) 
+//  Serial1.begin(38400);
+//
+//#endif 
+//  // === End of Serial port speed change ===
 
   myLCD.setOrientation(0x03);
   myLCD.setPenSolid(true);
   myLCD.setFontSolid(true);
 
   myLCD.setFont(0);
-  myLCD.gText( 0, 225, 0xffff, myLCD.WhoAmI());
+  myLCD.gText( 0, 210, 0xffff, myLCD.WhoAmI());
   myLCD.setTouch(true);
 
   l=millis();
@@ -124,7 +124,8 @@ void setup() {
   b7.enable(true);
   b7.draw();
 
-  myGauge.define(&myLCD, 169, 120, 60, -2.0, 2.0, 8, 8);
+  myHistogram.dDefine(&myLCD, 60, 60, 200, 100, -2.0, 2.0, 100, 8, 4, 50, true, 0x0000, 0xffff, myLCD.setColour(0xff, 0xff, 0x00), myLCD.setColour(0x00, 0x00, 0xff), myLCD.setColour(0x00, 0xff, 0x00), myLCD.setColour(0xff, 0x00, 0x00));
+
 }
 
 uint32_t ll = 0;
@@ -144,14 +145,14 @@ void loop() {
   v = cos(i*PI/64.0) + 0.3*cos(i*PI/16.0+PI/8.0);
   i++;
   i %= 256;
-//  while (millis()-ll<100);
+  while (millis()-ll<100);
 
   ll=millis();
-  myGauge.draw( v, ftoa(v, 2, 7) );
+  myHistogram.draw( v );
 
-//  myLCD.setFont(3);
-//  myLCD.setFontSolid(true);
-//  myLCD.gText( 160, 180, 0xffff, ftoa(v, 2, 10 ));
+  myLCD.setFont(3);
+  myLCD.setFontSolid(true);
+  myLCD.gText( 160, 180, 0xffff, ftoa(v, 2, 10 ));
 
   if (myLCD.getTouchActivity()>0) {
     myLCD.getTouchXY(x, y);
