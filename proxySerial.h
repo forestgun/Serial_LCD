@@ -7,10 +7,8 @@
 // see README.txt
 //
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// http://embeddedcomputing.weebly.com/serial-lcd.html
-//
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set

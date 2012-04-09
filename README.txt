@@ -1,17 +1,21 @@
 
-# 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-Arduino & chipKIT Library
+	4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
+	Arduino & chipKIT Library
 
-© Rei VILO, 2010-2012
-CC = BY NC SA
-http://sites.google.com/site/vilorei/
+	© Rei VILO, 2010-2012
+	CC = BY NC SA
+	http://embeddedcomputing.weebly.com/serial-lcd.html
 
-## Links
-[Main page](http://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen)
-including full documentation, examples, tutorials, code and downloads
+Links
+	http://embeddedcomputing.weebly.com/serial-lcd.html
+	including full documentation, examples, tutorials, code and downloads
+
+For 
+	4D Systems Goldelox and Picaso SGC Command Set
+	http://www.4dsystems.com.au/
 
 
-## Serial_LCD
+Serial_LCD
 May 10, 2011 release 1	initial release
 Jun 15, 2011 release 2	features added and bugs fixed
 Jun 29, 2011 release 3	setBackGroundColour added and SD card
@@ -42,7 +46,7 @@ Apr 09, 2012 release 124	gText with multiplier for big text
 Apr 09, 2012 release 224	gText with multiplier for big text
 
 
-## proxySerial
+proxySerial
 Aug 04, 2011 release 1	chipKIT compatibility with external proxySerial.h
 Sep 23, 2011 release 2	ms monitoring to avoid RX TX collapse
 Oct 10, 2011 release 3	Stream.h class based i2cSerial library
@@ -55,7 +59,7 @@ Feb 12, 2012 release 106a	__AVR_ATmega328P__ added
 Mar 19, 2012 release 207	Arduino 1.0 compatible
 
 
-## button / GUI
+button / GUI
 Sep 18, 2011 release 1	dialog window with up to 3 buttons
 Nov 25, 2011 release 2	faster dialog show/hide and optional area for screen copy to/read from SD
 Nov 27, 2011 release 3	bugs fixed
@@ -70,7 +74,7 @@ Feb 12, 2012 release 108a	__AVR_ATmega328P__ added
 Mar 19, 2012 release 209	Arduino 1.0 compatible
 
 
-## Graphics
+Graphics
 Jan 22, 2012 release 1	new Graphics library with example Graphics_main
 Jan 25, 2012 release 2	(x0, y0, dx, fy) functions added to (x1, x2, y1, y2) = (x0, y0, x0+dx, y0+dy)
 Jan 27, 2012 release 3	histogram graphic with example Histogram_main
@@ -84,17 +88,17 @@ Feb 16, 2012 release 108	yaw, pitch, roll graphics
 Mar 19, 2012 release 209	Arduino 1.0 compatible
 
 
-## Gallery
+Gallery
 Mar 13, 2012 release 101	initial release
 Mar 19, 2012 release 202	Arduino 1.0 compatible
 
 
-## Tutorial
+Tutorial
 Full documentation at
 http:sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen
 
 
-## Required
+Required
 . Arduino IDE 0023
 . NewSoftSerial release 11 beta
 http://arduiniana.org/2011/01/newsoftserial-11-beta/
@@ -102,18 +106,18 @@ http://arduiniana.org/2011/01/newsoftserial-11-beta/
 . I2C_Serial release 103
 
 
-## Bugs & ToDos
+Bugs & ToDos
 __AVR__ constant is not recognised by Arduino IDE, only by chipKIT MPIDE
 __AVR_ATmega328P__ added for Arduino IDE
 
 None
 
 
-## Roadmap
+Roadmap
 http://sites.google.com/site/vilorei/arduino/13--serial-touch-320x240-lcd-screen/roadmap
 
 
-## Serial Port Multiple Options
+Serial Port Multiple Options
 
 hardware : Arduino . Serial (pins 0 & 1)
          : chipKIT . Serial (pins 0 & 1) + Serial1 (pins 39 & 40)
@@ -124,7 +128,7 @@ i2c      : Arduino . (pins 4 & 5) with library I2C_Serial
 
 
 
-## SC16IS750 I2C slave bridge to serial
+SC16IS750 I2C slave bridge to serial
 Arduino + chipKIT Library
 
 Oct 06, 2011 release 1	initial release
@@ -133,10 +137,4 @@ Oct 25, 2011 release 3	I2C address selection through parameter default=0, 1, 2 o
 Jan 28, 2012 release 103	new index
 Mar 19, 2012 release 204	Arduino 1.0 compatible
 
-## Based on
-4D LABS PICASO-SGC Command Set
-Software Interface Specification
-Document Date: 1st March 2011     
-Document Revision: 6.0
-http:www.4d-Labs.com
 
