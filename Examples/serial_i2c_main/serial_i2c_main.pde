@@ -18,22 +18,22 @@
 //
 //
 
+// --- i2cSerial Case - Arduino + chipKIT
+#include "Wire.h"
+#include "I2C_Serial.h"
 #include "Serial_LCD.h"
 #include "proxySerial.h"
 #include "GUI.h"
 
 // Test release
-#if I2C_SERIAL_RELEASE < 103
-#error required I2C_SERIAL_RELEASE 103
+#if I2C_SERIAL_RELEASE < 104
+#error required I2C_SERIAL_RELEASE 104
 #endif
-// test release
-#if GUI_RELEASE < 108
-#error required GUI_RELEASE 108
-#endif
+//// test release
+//#if GUI_RELEASE < 108
+//#error required GUI_RELEASE 108
+//#endif
 
-// --- i2cSerial Case - Arduino + chipKIT
-#include "Wire.h"
-#include "I2C_Serial.h"
 
 I2C_Serial myI2C(0);
 ProxySerial mySerial(&myI2C);
@@ -47,6 +47,12 @@ void setup() {
   Serial.begin(19200);
   Serial.print("\n\n\n***\n");
 
+
+  Serial.print("I2C_SERIAL_RELEASE: ");
+  Serial.print(I2C_SERIAL_RELEASE, DEC);
+  Serial.print("\n");
+
+
   // --- i2cSerial Case - Arduino + chipKIT
   Wire.begin();
   myI2C.begin(9600);
@@ -56,6 +62,11 @@ void setup() {
   Serial.print(myI2C.test(), DEC);
   Serial.print("*\n");
   // ===
+
+  Serial.print("\n LCD reset \t");
+  myI2C.reset(0);
+  Serial.print("done \n");
+
 
   myLCD.begin(4);
 
@@ -133,4 +144,5 @@ void loop() {
   myLCD.gText( 250, 225, ftoa(millis()-l, 0, 6));
   l=millis();
 }
+
 

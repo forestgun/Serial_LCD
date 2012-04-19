@@ -136,5 +136,7 @@ Oct 10, 2011 release 2	Stream.h class based
 Oct 25, 2011 release 3	I2C address selection through parameter default=0, 1, 2 or 12
 Jan 28, 2012 release 103	new index
 Mar 19, 2012 release 204	Arduino 1.0 compatible
+Apr 19, 2012 release 104	reset with IO from I2C to serial bridge
+
 
 
