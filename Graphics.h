@@ -4,11 +4,12 @@
 // ----------------------------------
 //
 // Apr 09, 2012 release 108
-// see README.txt
+// See README.txt
 //
 // © Rei VILO, 2010-2012
 //   CC = BY NC SA
 //   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set
@@ -21,8 +22,8 @@
 #include "Serial_LCD.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 119
-#error required SERIAL_LCD_RELEASE 119
+#if SERIAL_LCD_RELEASE < 125
+#error required SERIAL_LCD_RELEASE 125
 #endif
 
 #ifndef Graphics_h

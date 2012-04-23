@@ -3,12 +3,13 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 124
-// see README.txt
+// Apr 22, 2012 release 125
+// See README.txt
 //
 // © Rei VILO, 2010-2012
 //   CC = BY NC SA
 //   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set
@@ -93,15 +94,17 @@ uint8_t Serial_LCD::setResolutionVGA(uint8_t b) {
 }   
 
 
-uint8_t Serial_LCD::setSpeed(uint16_t speed) {
+uint8_t Serial_LCD::setSpeed(uint32_t speed) {
     uint8_t a=0x06;
     if      (speed==(uint16_t)  9600) a=0x06;
     else if (speed==(uint16_t) 19200) a=0x08;
     else if (speed==(uint16_t) 38400) a=0x0a;  // max for Arduino
     else if (speed==(uint16_t) 57600) a=0x0c;
     else if (speed==(uint16_t)115200) a=0x0d;  // ok with chipKIT
-    //  else if (speed==(uint16_t)256000) a=0x0f;  
+                                               //  else if (speed==(uint16_t)256000) a=0x0f;  
     else return 0x15;
+    
+    delay(10);
     
     if (a != 0x06) {
         _port->print('Q');
@@ -133,7 +136,7 @@ uint16_t _size(uint8_t ui, uint8_t answer) {
 }
 
 String Serial_LCD::WhoAmI() {  
-    String s="Serial 4D Labs screen ";
+    String s="4D Systems screen ";
     _port->print('V');
     _port->print((char)0x00);
     delay(10);
@@ -524,10 +527,10 @@ uint8_t Serial_LCD::getTouchActivity() {
     _port->print((char)0x04);   // state
     
     uint8_t i=0; 
-//    delay(10);    // delay required by chipKIT
-//    while ((_port->available()) && (i<4)) {
-    while (_port->available() != 4);
-    while (i < 4) {
+    delay(10);    // delay required by chipKIT
+    while ((_port->available()) && (i<4)) {
+        //    while (_port->available() != 4);
+        //    while (i < 4) {
         _touch_buffer[i]=_port->read();
         i++;
     }
@@ -549,10 +552,10 @@ uint8_t Serial_LCD::getTouchXY(uint16_t &x, uint16_t &y) {
     _port->print((char)0x05);   // coordinates
     
     uint8_t i=0; 
-//    delay(10);    // delay required by chipKIT
-//    while (_port->available() && (i<4)) {
-    while (_port->available() != 4);
-    while (i < 4) {
+    delay(10);    // delay required by chipKIT
+    while (_port->available() && (i<4)) {
+        //    while (_port->available() != 4);
+        //    while (i < 4) {
         _touch_buffer[i]=_port->read();
         i++;
     }
@@ -605,32 +608,34 @@ uint8_t Serial_LCD::initSD() {
     a = nacAck();
     
     if (a==0x06) {
-        //    _checkedSD = true;
-        //
+        _checkedSD = true;
+        
         // Method 1 - Look for RAW.INI file
+		//    _checkedFAT = true;
         //    if ( findFile("RAW.INI")==0x06 ) { 
         //      _checkedRAW = true;
         //      delay(1000);
         //    }
+        
         // Method 2 - Set Address Pointer of Card (RAW) - @41hex
-        //    _port->print('@');
-        //    _port->print('A');
-        //    _port->print((uint8_t)0);
-        //    _port->print((uint8_t)0);
-        //    _port->print((uint8_t)0);
-        //    _port->print((uint8_t)0);
-        //      if ( nacAck()==0x06 ) {
-        //          _checkedRAW = true;
-        //      }
-        //      _port->flush(); // if no RAW, 5 times error message 0x15, only one read
+        _checkedFAT = true;
+        _port->print('@');
+        _port->print('A');
+        _port->print((uint8_t)0);
+        _port->print((uint8_t)0);
+        _port->print((uint8_t)0);
+        _port->print((uint8_t)0);
+        if ( nacAck()==0x06 ) _checkedRAW = true;
+        _port->flush(); // if no RAW, 5 times error message 0x15, only one read
+        
         // Method 3 - specific function
-        _port->print('z');
-        a = _port->read();
-        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
-        if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
-        if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
-        //      if (bitRead(a, 4)) Serial.print("FAT partition is protected");Serial.print("\n");
-        //      if (bitRead(a, 3)) Serial.print("New Image format Enabled");Serial.print("\n");
+        //        _port->print('z');
+        //        a = _port->read();
+        //        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
+        //        if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
+        //        if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
+        //        //      if (bitRead(a, 4)) Serial.print("FAT partition is protected");Serial.print("\n");
+        //        //      if (bitRead(a, 3)) Serial.print("New Image format Enabled");Serial.print("\n");
         
         // Back to initial result
         a = 0x06;
@@ -644,7 +649,9 @@ boolean Serial_LCD::checkSD() {
     return _checkedSD; 
 }
 boolean Serial_LCD::checkRAW() { 
-    return _checkedRAW; 
+    return false;
+    // write & read on RAW require investigation
+    //    return _checkedRAW; 
 }
 boolean Serial_LCD::checkFAT() { 
     return _checkedFAT; 
@@ -685,6 +692,14 @@ uint8_t Serial_LCD::saveScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1, uin
 // x0, y0 and width and height  
 uint8_t Serial_LCD::dSaveScreenRAW(uint32_t sector, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy) {
     if ( !_checkedSD ) return 0x15;
+    if (_checkedScreenType==0) return 0x15;   //  exclude uOLED
+    
+    //    Serial.print("\r\n dSaveScreenRAW \t");
+    //    Serial.print(x1, DEC);
+    //    Serial.print("\t");
+    //    Serial.print(y1, DEC);
+    //    Serial.print("\n");
+    
     _port->print('@');
     _port->print('C');
     _port->printXY((uint16_t)x0);
@@ -705,6 +720,12 @@ uint8_t Serial_LCD::dSaveScreenRAW(uint32_t sector, uint16_t x0, uint16_t y0, ui
 uint8_t Serial_LCD::readScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1) {
     if (_checkedScreenType==0) return 0x15;   //  exclude uOLED
     if ( !_checkedSD ) return 0x15;
+    
+    //    Serial.print("\r\n readScreenRAW \t");
+    //    Serial.print(x1, DEC);
+    //    Serial.print("\t");
+    //    Serial.print(y1, DEC);
+    //    Serial.print("\n");
     
     // RAW image new format
     _port->print('Y');
@@ -731,6 +752,10 @@ uint8_t Serial_LCD::writeStringFile(String filename, String text, uint8_t option
     String s;
     uint8_t a;
     uint8_t j;
+    
+    //    Serial.print("\n * Serial_LCD::_checkedSD \t");
+    //    Serial.print(_checkedSD, HEX);
+    //    Serial.print("\n");
     
     if ( !_checkedSD ) return 0x15;
     
@@ -995,7 +1020,7 @@ uint8_t Serial_LCD::findFile(String filename) {
         }
     }
     while ( (c!=0x06) && (c!=0x15) ) c = _port->read();  
-
+    
     if (s.length()==0) return 0x15;
     if (filename.equalsIgnoreCase(s.substring(0, (s.indexOf(c))))) return 0x06 ;
     return 0x15;
@@ -1015,6 +1040,7 @@ uint8_t Serial_LCD::saveScreenFAT(String filename, uint16_t x1, uint16_t y1, uin
 uint8_t Serial_LCD::dSaveScreenFAT(String filename, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy) {    
     uint8_t a;
     if ( !_checkedSD ) return 0x15;
+    
     _port->print('@');
     _port->print('c');
     _port->printXY((uint16_t)x0);
@@ -1033,6 +1059,13 @@ uint8_t Serial_LCD::dSaveScreenFAT(String filename, uint16_t x0, uint16_t y0, ui
 // no coordinates: 0, 0 for full screen
 uint8_t Serial_LCD::readScreenFAT(String filename, uint16_t x1, uint16_t y1) {   
     if ( !_checkedSD ) return 0x15;
+    
+    //    Serial.print("\n readScreenFAT \t");
+    //    Serial.print(x1, DEC);
+    //    Serial.print("\t");
+    //    Serial.print(y1, DEC);
+    //    Serial.print("\t");
+    
     _port->print('@');
     _port->print('m');
     _port->print(filename);
@@ -1113,9 +1146,8 @@ uint16_t Serial_LCD::halfColour(uint16_t rgb) {
 
 uint16_t Serial_LCD::reverseColour(uint16_t rgb) {
     // rgb16 = red5 green6 blue5 
-    return (uint16_t)(rgb ^ 0xffff);
+    return (uint16_t)(rgb ^ 0b1111111111111111);
 }
-
 
 
 uint8_t Serial_LCD::nacAck() {

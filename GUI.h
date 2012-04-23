@@ -3,26 +3,27 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 108
-// see README.txt
+// Apr 22, 2012 release 109
+// See README.txt
 //
 // © Rei VILO, 2010-2012
 //   CC = BY NC SA
 //   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set
 //   http://www.4dsystems.com.au/
 //
 //
-#define GUI_RELEASE 108
+#define GUI_RELEASE 109
 
 #include "WProgram.h"
 #include "Serial_LCD.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 118
-#error required SERIAL_LCD_RELEASE 118
+#if SERIAL_LCD_RELEASE < 125
+#error required SERIAL_LCD_RELEASE 125
 #endif
 
 #ifndef GUI_h
@@ -54,7 +55,7 @@ public:
 
   boolean state();
   void draw(boolean b1=false);
-  void enable(boolean b1); 
+  void enable(boolean b1=true); 
   boolean check(boolean instant=false);
   uint16_t getIndex();
 
@@ -78,10 +79,14 @@ uint8_t dialog(Serial_LCD * lcd0, String text0, uint8_t kind0, uint16_t textColo
 uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t textColour0, uint16_t highColourMain0, uint16_t highColourSub0);
 
 // label
-void dLabel(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour0, uint16_t backColour0, uint8_t horizontal0, uint8_t vertical0, uint8_t size0);
-void  label(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, String text0, uint16_t textColour0, uint16_t backColour0, uint8_t horizontal0, uint8_t vertical0, uint8_t size0);
+void dLabel(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour0=whiteColour, uint16_t backColour0=blackColour, uint8_t horizontal0=0, uint8_t vertical0=0, uint8_t size0=9);
+void  label(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, String text0, uint16_t textColour0=whiteColour, uint16_t backColour0=blackColour, uint8_t horizontal0=0, uint8_t vertical0=0, uint8_t size0=9);
 
 #endif
+
+// slider
+// output = true when OK, output = false when Cancel
+boolean slider(Serial_LCD * lcd0, uint16_t &value, uint16_t min=0, uint16_t max=511, uint16_t step=8, uint16_t minColour0=greenColour, uint16_t maxColour0=redColour, String okText0="OK", uint16_t okTextColour0=whiteColour, uint16_t okColour0=blueColour, String cancelText0="Cancel", uint16_t cancelTextColour0=whiteColour, uint16_t cancelColour0=yellowColour);
 
 
 

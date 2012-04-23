@@ -4,11 +4,12 @@
 // ----------------------------------
 //
 // Apr 09, 2012 release 106
-// see README.txt
+// See README.txt
 //
 // © Rei VILO, 2010-2012
 //   CC = BY NC SA
 //   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set
@@ -129,40 +130,40 @@ void ProxySerial::setXY16(boolean b) {
 
 void ProxySerial::print(int8_t i) { 
     _checkSpeed();  
-    _proxyPort->print(i); 
+    _proxyPort->print((char)i); 
 }
 
 void ProxySerial::print(uint8_t ui) { 
     _checkSpeed();  
-    _proxyPort->print(ui); 
+    _proxyPort->print((char)ui); 
 };
 
 void ProxySerial::print(int16_t i) { 
     _checkSpeed();  
-    _proxyPort->print(highByte(i)); 
-    _proxyPort->print(lowByte(i)); 
+    _proxyPort->print((char)highByte(i)); 
+    _proxyPort->print((char)lowByte(i)); 
 };
 
 void ProxySerial::print(uint16_t ui) { 
     _checkSpeed();  
-    _proxyPort->print(highByte(ui)); 
-    _proxyPort->print(lowByte(ui)); 
+    _proxyPort->print((char)highByte(ui)); 
+    _proxyPort->print((char)lowByte(ui)); 
 };
 
 void ProxySerial::printXY(int16_t i) { 
     _checkSpeed(); 
-    if ( _XY16 )   _proxyPort->print(highByte(i)); 
-    _proxyPort->print(lowByte(i)); 
+    if ( _XY16 )   _proxyPort->print((char)highByte(i)); 
+    _proxyPort->print((char)lowByte(i)); 
 };
 
 void ProxySerial::printXY(uint16_t ui) { 
     _checkSpeed();  
-    if ( _XY16 ) _proxyPort->print(highByte(ui)); 
-    _proxyPort->print(lowByte(ui)); 
+    if ( _XY16 ) _proxyPort->print((char)highByte(ui)); 
+    _proxyPort->print((char)lowByte(ui)); 
 };
 
 void ProxySerial::print(char c) { 
-    _proxyPort->print((uint8_t)c); 
+    _proxyPort->print((char)c); 
 };
 void ProxySerial::print(String s) { 
     for (uint8_t i=0; i<s.length(); i++) {

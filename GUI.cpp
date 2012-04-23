@@ -3,12 +3,13 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 108
-// see README.txt
+// Apr 22, 2012 release 109 - 19:45
+// See README.txt
 //
 // © Rei VILO, 2010-2012
 //   CC = BY NC SA
 //   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set
@@ -19,6 +20,7 @@
 #include "Serial_LCD.h"
 #include "GUI.h"
 
+// ---- utility
 item setItem(uint8_t index0, String text0) {
     item item0;
     item0.index = index0;
@@ -26,14 +28,14 @@ item setItem(uint8_t index0, String text0) {
     return item0;
 }
 
-
+// ---- button
 button::button() {   
     ;
 }
 
 // string-based button
 void button::dStringDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour1, uint16_t highColour1) {
-    stringDefine( lcd0, x0, y0, x0+dx, y0+dy, text0, textColour1, highColour1, lcd0->halfColour(highColour1), 9);
+    stringDefine( lcd0, x0, y0, x0+dx-1, y0+dy-1, text0, textColour1, highColour1, lcd0->halfColour(highColour1), 9);
 }
 
 void  button::stringDefine(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, String text0, uint16_t textColour1, uint16_t highColour1) {
@@ -41,7 +43,7 @@ void  button::stringDefine(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t
 }
 
 void button::dStringDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour1, uint16_t highColour1, uint16_t lowColour1, uint8_t size0) {
-    stringDefine(lcd0, x0, y0, x0+dx, y0+dy, text0, textColour1, highColour1, lowColour1, size0);
+    stringDefine(lcd0, x0, y0, x0+dx-1, y0+dy-1, text0, textColour1, highColour1, lowColour1, size0);
 }
 
 void  button::stringDefine(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, String text0, uint16_t textColour1, uint16_t highColour1, uint16_t lowColour1, uint8_t size0) {
@@ -58,7 +60,7 @@ void button::dDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, u
 }
 
 void button::dDefine(Serial_LCD  * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, item item0, uint16_t textColour1, uint16_t highColour1, uint16_t lowColour1, uint8_t size0) {
-    define(lcd0, x0, y0, x0+dx, y0+dy, item0, textColour1, highColour1, lowColour1, size0);
+    define(lcd0, x0, y0, x0+dx-1, y0+dy-1, item0, textColour1, highColour1, lowColour1, size0);
 }
 
 void button::define(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, item item0, uint16_t textColour1, uint16_t highColour1, uint16_t lowColour1, uint8_t size0) {
@@ -68,6 +70,16 @@ void button::define(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, u
     _y1 = y1;
     _x2 = x2;
     _y2 = y2;
+    
+    //    Serial.print("\r\n button " + String(item0.label) + "\t");
+    //    Serial.print(x1, DEC);
+    //    Serial.print("\t");
+    //    Serial.print(y1, DEC);
+    //    Serial.print("\t");
+    //    Serial.print(x2, DEC);
+    //    Serial.print("\t");
+    //    Serial.print(y2, DEC);
+    //    Serial.print("\n");
     
     _text = item0.label;
     _index = item0.index;
@@ -132,7 +144,7 @@ boolean button::check(boolean instant) {
         // pressed
         if ((x0>=_x1) && (x0<=_x2) && (y0>=_y1) && (y0<=_y2)) {
             if (instant) return true;
-          
+            
             draw(true); 
             
             // debounce
@@ -164,6 +176,7 @@ uint16_t button::getIndex() {
 }
 
 
+// ---- dialog
 uint8_t dialog(Serial_LCD * lcd0, String text0, uint8_t kind0, uint16_t textColour0, uint16_t highColour0, uint16_t lowColour0, String text1, String button1="OK", uint16_t textColour1=0xffff, uint16_t highColour1=0x000f, uint16_t lowColour1=0x0008, String text2, String button2, uint16_t textColour2, uint16_t highColour2, uint16_t lowColour2, String text3, String button3, uint16_t textColour3, uint16_t highColour3, uint16_t lowColour3) {
     uint8_t a;
     Serial_LCD * _pscreen = lcd0;
@@ -179,15 +192,15 @@ uint8_t dialog(Serial_LCD * lcd0, String text0, uint8_t kind0, uint16_t textColo
     if ( _pscreen->checkSD() ) {
         if ( _pscreen->checkRAW() ) {
             a = _pscreen->dSaveScreenRAW((uint32_t)0, _x0, _y0, 200, 200);
-            //      Serial.print("\n dialog dSaveScreenRAW \t");
+            //      Serial.print("\r\n dialog dSaveScreenRAW \t");
             //      Serial.print(a, HEX);
-            //      Serial.print("\n");
+            //      Serial.print("\r\n");
         }
         else { 
             a = _pscreen->dSaveScreenFAT("dialog.tmp", _x0, _y0, 200, 200); 
-            //      Serial.print("\n dialog dSaveScreenFAT \t");
+            //      Serial.print("\r\n dialog dSaveScreenFAT \t");
             //      Serial.print(a, HEX);
-            //      Serial.print("\n");
+            //      Serial.print("\r\n");
         }
     }
     
@@ -274,7 +287,7 @@ uint8_t dialog(Serial_LCD * lcd0, String text0, uint8_t kind0, uint16_t textColo
 }
 
 
-
+// ---- menu
 uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t textColour0, uint16_t highColourMain0, uint16_t highColourSub0) {
     uint8_t i, j, k, level, nMain, nSub, nItems;
     uint16_t current, mask;
@@ -288,9 +301,7 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
     
     // Check SD
     nItems = nItems0;
-    if ( !_pscreen->checkSD() ) {
-        _pscreen->initSD();
-    } 
+    if ( !_pscreen->checkSD() ) _pscreen->initSD();
     
     // landscape and portrait coordinates
     
@@ -311,7 +322,7 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
         }
     }
     
-//    Serial.print("\n ! end of saveScreen... \n");
+    //    Serial.print("\r\n ! end of saveScreen... \n");
     
     main[0].dDefine(      _pscreen, 0, 0*30, 79, 29, menuItem0[0], 0xffff, highColourMain0, _pscreen->halfColour(highColourMain0), 9);
     main[6].dStringDefine(_pscreen, 0, 6*30, 79, 29, "Cancel",     0xffff, _pscreen->setColour(0xff, 0xff, 0x00), _pscreen->setColour(0x7f, 0x7f, 0x00), 9);
@@ -335,8 +346,8 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
     
     // main loop
     while ( !mainFlag ) {
-        for (i=0; i<8; i++)       sub[i].enable(false);
-        for (i=0; i<6; i++)       main[i].enable(false);
+        for (i=0; i<8; i++) sub[i].enable(false);
+        for (i=0; i<6; i++) main[i].enable(false);
         
         // main menu column 
         // menu title
@@ -370,9 +381,7 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
         // sub-menu column
         mask = 0x0000;
         for (uint8_t k=0; k<4; k++) {    
-            if ( (current & (0xf << (4*k))) > 0 ) {
-                mask |= ((uint16_t)0xf << (4*k));
-            }
+            if ( (current & (0xf << (4*k))) > 0 ) mask |= ((uint16_t)0xf << (4*k));
         }
         mask ^= 0xffff;
         
@@ -460,6 +469,7 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
 }
 
 
+// ---- label
 void dLabel(Serial_LCD  * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour0, uint16_t backColour0, uint8_t horizontal0, uint8_t vertical0, uint8_t size0) {
     label(lcd0, x0, y0, x0+dx, y0+dy, text0, textColour0, backColour0, horizontal0, vertical0, size0);
 }
@@ -470,7 +480,7 @@ void label(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
     String _text;
     Serial_LCD * _pscreen = lcd0;
     
-    if (size0==9) {
+    if ( size0==9 ) {
         uint16_t i=4;
         do {
             i--;
@@ -488,12 +498,12 @@ void label(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
     
     // horizontal 
     // default = 0 = center, 1 = left, 2 = right
-    if (horizontal0==1)   _xt = x1;
-    else if (horizontal0==2)   _xt = x2 - _text.length() * _pscreen->fontX();
-    else   _xt = x1 + ( (x2-x1) - (_text.length() * _pscreen->fontX()) ) /2;
+    if (horizontal0==1) _xt = x1;
+    else if (horizontal0==2) _xt = x2 - _text.length() * _pscreen->fontX();
+    else _xt = x1 + ( (x2-x1) - (_text.length() * _pscreen->fontX()) ) /2;
     
     // vertical 
-    // default = 0 = center, 1 = left, 2 = right
+    // default = 0 = center, 1 = up, 2 = down
     if (vertical0==1)   _yt = y1;
     else if (vertical0==2)   _yt = y2 - _pscreen->fontY();
     else   _yt = y1 + ( (y2-y1) - _pscreen->fontY() ) /2;
@@ -506,3 +516,110 @@ void label(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
     _pscreen->setFontSolid(false);
     _pscreen->gText(_xt, _yt, _text, textColour0);
 }
+
+
+// ---- slider
+boolean slider(Serial_LCD * lcd0, uint16_t &value, uint16_t min, uint16_t max, uint16_t step, uint16_t minColour0, uint16_t maxColour0, String okText0, uint16_t okTextColour0, uint16_t okColour0, String cancelText0, uint16_t cancelTextColour0, uint16_t cancelColour0) {
+    
+    Serial_LCD * _pscreen = lcd0;
+    
+    char a = 0x00;
+    int16_t i, j;
+    uint16_t k = _pscreen->maxY()-80;
+    
+    // Check SD
+    if ( !_pscreen->checkSD() ) _pscreen->initSD();
+    
+    // landscape and portrait coordinates
+    uint16_t _x0 = _pscreen->maxX() - 60;
+    uint16_t _y0 = 0;
+    
+    // save initial screen
+    if ( _pscreen->checkSD() ) {
+        if ( _pscreen->checkRAW() ) a = _pscreen->dSaveScreenRAW((uint32_t) 0, _x0,  _y0, 60, _pscreen->maxY() );
+        else a = _pscreen->dSaveScreenFAT( "slider.tmp", _x0, _y0, 60, _pscreen->maxY() );
+    }
+    
+        Serial.print("\r\n dSaveScreenRAW/FAT ");
+        Serial.print(a, HEX);
+    
+    // buttons
+    button sb1;    
+    sb1.dDefine(_pscreen, _x0, _y0, 60, 40-2, setItem( 1, okText0), okTextColour0, okColour0);
+    sb1.enable(true);
+    sb1.draw();
+    
+    button sb2;
+    sb2.dDefine(_pscreen, _x0, _pscreen->maxY()-40+2, 60, 40-2, setItem( 2, cancelText0), cancelTextColour0, cancelColour0);
+	sb2.enable(true);
+    sb2.draw();
+    
+	// variables for value management
+    uint16_t x;
+    uint16_t y = map(value, min, max, _y0+40, _y0+40+k);
+    uint16_t initialY = y;
+    uint16_t oldY = y;
+    
+    // colour min, max and value
+    uint8_t minRed, maxRed, valueRed;
+    uint8_t minGreen, maxGreen, valueGreen;
+    uint8_t minBlue, maxBlue, valueBlue;
+    
+    _pscreen->splitColour(minColour0, minRed, minGreen, minBlue);
+    _pscreen->splitColour(maxColour0, maxRed, maxGreen, maxBlue);
+    
+    for ( i=0; i<k; i++ ) {
+        valueRed   = map(i, 0, k, minRed, maxRed);
+        valueGreen = map(i, 0, k, minGreen, maxGreen);
+        valueBlue  = map(i, 0, k, minBlue, maxBlue);
+        
+        j = _pscreen->setColour(valueRed, valueGreen, valueBlue);
+        if ( (_y0+40+i>initialY-4) && (_y0+40+i<initialY+4) ) j = _pscreen->reverseColour(j);
+        
+        _pscreen->dLine(_x0+4, _y0+40+i, 60-8, 1, j);
+    }
+    
+    // slider main loop
+    boolean answer = false;
+    
+    while ( answer==0 ) {
+        a = _pscreen->getTouchActivity();
+        //        Serial.print(a, DEC);
+        
+		if ( a ) {
+            if      (sb1.check()) answer = sb1.getIndex(); 
+            else if (sb2.check()) answer = sb2.getIndex(); 
+            else {	    
+                _pscreen->getTouchXY(x, y);
+                
+                if ( (x>_x0) && (x<_pscreen->maxX()) && (y>_y0+40+4) && (y<_y0+40+k-4) ) {
+                    for (i=min(oldY, y)-4+1; i<max(oldY, y)+4; i++) {
+						if ( ((i>oldY-4) && (i<oldY+4)) ^ ((i>y-4) && (i<y+4)) )
+                            _pscreen->dLine(_x0+4, i, 60-8, 1, _pscreen->reverseColour(_pscreen->readPixel(_x0+4, i)));                    
+                    }
+                    oldY = y;
+                }
+            }
+        }
+        delay(100);
+    }
+    
+    // restore initial screen
+    a = 0;
+    if ( _pscreen->checkSD() ) {
+        if ( _pscreen->checkRAW() ) a = _pscreen->readScreenRAW((uint32_t)0, _x0, _y0 );
+        else a = _pscreen->readScreenFAT("slider.tmp", _x0, _y0 );
+    }
+        Serial.print("\r\n readScreenRAW/FAT ");
+        Serial.print(a, HEX);
+    
+    if ( answer==sb1.getIndex() ) {
+        if ( oldY!=initialY ) value = map(oldY, _y0+40, _y0+40+k, min, max);
+        return true; 
+    } else { 
+        return false; 
+    }
+    
+}
+
+

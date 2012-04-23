@@ -3,19 +3,20 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 124
-// see README.txt
+// Apr 22, 2012 release 125
+// See README.txt
 //
 // © Rei VILO, 2010-2012
 //   CC = BY NC SA
 //   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
 // For 
 //   4D Systems Goldelox and Picaso SGC Command Set
 //   http://www.4dsystems.com.au/
 //
 //
-#define SERIAL_LCD_RELEASE 124
+#define SERIAL_LCD_RELEASE 125
 
 #ifndef Serial_LCD_h
 #define Serial_LCD_h
@@ -52,7 +53,7 @@ public:
     
     // 2.1 General Commands
     void begin(int8_t resetPin0=-1); // AutoBaud – 55hex 
-    uint8_t setSpeed(uint16_t speed); // Set new Baud-Rate - 51hex 
+    uint8_t setSpeed(uint32_t speed); // Set new Baud-Rate - 51hex 
     String WhoAmI(); // Version-Device Info Request – 56hex 
     uint8_t replaceBackGroundColour(uint16_t colour);  // Replace Background Colour – 42hex 
     uint8_t clear(); // Clear Screen – 45hex
