@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 22, 2012 release 125
+// Apr 24, 2012 release 126
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -85,7 +85,7 @@ uint8_t Serial_LCD::replaceBackGroundColour(uint16_t colour) {
 
 
 uint8_t Serial_LCD::setResolutionVGA(uint8_t b) {
-    if (_checkedScreenType!=2) return 0x15;   // VGA only
+    if (_checkedScreenType!=__uVGA__) return 0x15;   // VGA only
     
     _port->print('Y');
     _port->print((uint8_t)0x0c);
@@ -143,6 +143,7 @@ String Serial_LCD::WhoAmI() {
     
     uint8_t i=0;
     uint8_t c=0;
+    
     while(_port->available()!=0) {
         c=_port->read();
         s += String(c, HEX);
@@ -150,12 +151,13 @@ String Serial_LCD::WhoAmI() {
         
         if ( i==0 )  {
             _checkedScreenType = c; // 8-bits uLED=0, 16_bits uLCD=1, 16_bits uVGA=2
-            _port->setXY16( _checkedScreenType>0 );
+            _port->setXY16( _checkedScreenType>__uOLED__ );
         }
         if ( i==1 )  _checkedHardwareVersion = c;
         if ( i==2 )  _checkedSoftwareVersion = c;
         if ( i==3 )  _maxX = _size(c, 3); // standard
         if ( i==4 )  _maxY = _size(c, 4); // standard
+        if ( i>4 ) Serial.print("? ? ?");
         
         i++;
     }
@@ -186,7 +188,7 @@ void Serial_LCD::off() {
 
 
 uint8_t Serial_LCD::setBacklight(boolean b) {
-    if (_checkedScreenType!=1) return 0x15;   // only uLCD 
+    if (_checkedScreenType!=__uLCD__) return 0x15;   // only uLCD 
     
     _port->print('Y');
     _port->print((char)0x00);
@@ -195,7 +197,7 @@ uint8_t Serial_LCD::setBacklight(boolean b) {
 }   
 
 uint8_t Serial_LCD::setDisplay(boolean b) {
-    if (_checkedScreenType==2) return 0x15;   // exclude VGA 
+    if (_checkedScreenType==__uVGA__) return 0x15;   // exclude VGA 
     
     _port->print('Y');
     _port->print((char)0x01);
@@ -204,7 +206,7 @@ uint8_t Serial_LCD::setDisplay(boolean b) {
 }
 
 uint8_t Serial_LCD::setContrast(uint8_t b) {
-    if (_checkedScreenType==2) return 0x15;   // exclude VGA 
+    if (_checkedScreenType==__uVGA__) return 0x15;   // exclude VGA 
     
     if (b<=0x0f) {
         _port->print('Y');
@@ -220,7 +222,7 @@ uint8_t Serial_LCD::setContrast(uint8_t b) {
 
 
 uint8_t Serial_LCD::setOrientation(uint8_t b) {   // Display Control Functions – 59hex
-    if (_checkedScreenType!=1) return 0x15;   // exclude VGA 
+    if (_checkedScreenType==__uVGA__) return 0x15;   // exclude VGA 
     
     _orientation = b;
     _port->print('Y');
@@ -235,7 +237,7 @@ uint8_t Serial_LCD::getOrientation() {
 } 
 
 uint8_t Serial_LCD::setTouch(boolean b) {
-    if (_checkedScreenType!=1) return 0x15;   // only uLCD 
+    if (_checkedScreenType!=__uLCD__) return 0x15;   // only uLCD 
     
     if (b) {
         _port->print('Y');
@@ -451,10 +453,10 @@ uint8_t Serial_LCD::setFont(uint8_t b) {
     // 00hex : 6x8 (5x7 false) small size font set 
     // 01hex : 8x8 medium size font set 
     // 02hex : 8x12 large size font set
-    // 03hex : 12x16 largest size font set - not on uLED
+    // 03hex : 12x16 largest size font set - not on uOLED
     
-    if (b>3) b=3;
-    if ( (b>2) && (_checkedScreenType==0) ) b=2;
+    if ( b>3 ) b=3;
+    if ( (b>2) && (_checkedScreenType==__uOLED__) ) b=2;
     
     _port->print('F');
     _port->print(b);
@@ -521,7 +523,7 @@ uint8_t Serial_LCD::gText(uint16_t x, uint16_t y, String s, uint16_t colour, uin
 //     2 : Touch Release 
 //     3 : Touch Moving
 uint8_t Serial_LCD::getTouchActivity() {
-    if (_checkedScreenType!=1) return 0x15;   // only uLCD 
+    if (_checkedScreenType!=__uLCD__) return 0x15;   // only uLCD 
     
     _port->print('o');
     _port->print((char)0x04);   // state
@@ -546,7 +548,7 @@ uint8_t Serial_LCD::getTouchActivity() {
 }
 
 uint8_t Serial_LCD::getTouchXY(uint16_t &x, uint16_t &y) {
-    if (_checkedScreenType!=1) return 0x15;   // only uLCD 
+    if (_checkedScreenType!=__uLCD__) return 0x15;   // only uLCD 
     
     _port->print('o');
     _port->print((char)0x05);   // coordinates
@@ -577,7 +579,7 @@ uint8_t Serial_LCD::dDetectTouchRegion(uint16_t x0, uint16_t y0, uint16_t dx, ui
 
 // filters only events 1=press and 3=move
 uint8_t Serial_LCD::detectTouchRegion(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-    if (_checkedScreenType!=1) return 0x15;   // only uLCD 
+    if (_checkedScreenType!=__uLCD__) return 0x15;   // only uLCD 
     
     _port->print('u');
     _port->printXY(x1);
@@ -625,15 +627,19 @@ uint8_t Serial_LCD::initSD() {
         _port->print((uint8_t)0);
         _port->print((uint8_t)0);
         _port->print((uint8_t)0);
+        
+        delay(10);
         if ( nacAck()==0x06 ) _checkedRAW = true;
         _port->flush(); // if no RAW, 5 times error message 0x15, only one read
         
-        // Method 3 - specific function
+        //        // Method 3 - specific function
         //        _port->print('z');
         //        a = _port->read();
+        //        delay(10);
         //        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
         //        if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
         //        if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
+		//
         //        //      if (bitRead(a, 4)) Serial.print("FAT partition is protected");Serial.print("\n");
         //        //      if (bitRead(a, 3)) Serial.print("New Image format Enabled");Serial.print("\n");
         
@@ -658,7 +664,7 @@ boolean Serial_LCD::checkFAT() {
 }
 
 uint8_t Serial_LCD::protectFAT(boolean b) {
-    if (_checkedScreenType==0) return 0x15;   // exclude uOLED  
+    if (_checkedScreenType==__uOLED__) return 0x15;   // exclude uOLED  
     
     _port->print('Y');
     _port->print((char)0x08);
@@ -692,7 +698,7 @@ uint8_t Serial_LCD::saveScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1, uin
 // x0, y0 and width and height  
 uint8_t Serial_LCD::dSaveScreenRAW(uint32_t sector, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy) {
     if ( !_checkedSD ) return 0x15;
-    if (_checkedScreenType==0) return 0x15;   //  exclude uOLED
+    if (_checkedScreenType==__uOLED__) return 0x15;   //  exclude uOLED
     
     //    Serial.print("\r\n dSaveScreenRAW \t");
     //    Serial.print(x1, DEC);
@@ -718,7 +724,7 @@ uint8_t Serial_LCD::dSaveScreenRAW(uint32_t sector, uint16_t x0, uint16_t y0, ui
 // x1, y1: left-top coordinates
 // no coordinates: 0, 0 for full screen
 uint8_t Serial_LCD::readScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1) {
-    if (_checkedScreenType==0) return 0x15;   //  exclude uOLED
+    if (_checkedScreenType==__uOLED__) return 0x15;   //  exclude uOLED
     if ( !_checkedSD ) return 0x15;
     
     //    Serial.print("\r\n readScreenRAW \t");
@@ -814,9 +820,9 @@ uint8_t Serial_LCD::readTextFile(String filename, uint8_t bytes, void (*cbReadFi
     
     _port->print('@');
     _port->print('a');
-    _port->print((uint8_t)bytes);
+    _port->print((char)bytes);
     _port->print(filename);
-    _port->print((uint8_t)0x00);    
+    _port->print((char)0x00);    
     
     uint8_t i = 0;
     char c = 0;
@@ -868,9 +874,9 @@ uint8_t Serial_LCD::readTextFileDelimiter(String filename, char delimiter, void 
     
     _port->print('@');
     _port->print('a');
-    _port->print((uint8_t)0x10);
+    _port->print((char)0x10);
     _port->print(filename);
-    _port->print((uint8_t) 0x00);    
+    _port->print((char)0x00);    
     
     uint8_t i = 0;
     char c = 0;
@@ -926,19 +932,21 @@ uint8_t Serial_LCD::openTextFileDelimiter(String filename, char delimeter) {
     if ( !_checkedSD ) return 0x15;
     
     _delimeter = delimeter;
+    _fileSize = 0;
     
     _port->print('@');
     _port->print('a');
-    _port->print((uint8_t)0x10);
+    _port->print((char)0x10);
     _port->print(filename);
-    _port->print((uint8_t) 0x00);    
+    _port->print((char)0x00);    
     
+    delay(100);
     while(!_port->available());
     for (uint8_t j=0; j<4; j++) {
         _fileSize <<= 4;
         _fileSize |= _port->read();
     }
-    
+
     return 0x06;
 }
 
@@ -952,12 +960,12 @@ boolean Serial_LCD::nextTextFileDelimiter(String * result) { // false = end
     delay(10);
     
     do {
-        if ( _port->available()==0 ) {
-            _port->print((char) 0x06);     
-        } 
+        if ( _port->available()==0 ) _port->print((char)0x06);
         
         while (!_port->available());
+        
         do {
+            delay(10);
             c = _port->read();  
             if ( (c==0x06) || (_fileSize==0) ) {
                 done = true;
@@ -970,15 +978,13 @@ boolean Serial_LCD::nextTextFileDelimiter(String * result) { // false = end
                 i++;
                 _fileSize--;
             }
-        } 
-        while ( _port->available() && (i<128) && !up && !done);
-    }
-    while ( (i<128) && !up && !done);
-    if (up || done) { 
-        *result = s; 
-    }
-    if ( done) while (_port->available()) { 
-        _port->read(); 
+        } while ( _port->available() && (i<128) && !up && !done );
+    } while ( (i<128) && !up && !done );
+    
+    if ( up || done ) *result = s;
+    if ( done ) {
+        delay(10);
+        while (_port->available()) _port->read(); 
     };
     
     return !done; // return true to continue, false if EOF
@@ -1020,6 +1026,7 @@ uint8_t Serial_LCD::findFile(String filename) {
         }
     }
     while ( (c!=0x06) && (c!=0x15) ) c = _port->read();  
+    _port->flush();
     
     if (s.length()==0) return 0x15;
     if (filename.equalsIgnoreCase(s.substring(0, (s.indexOf(c))))) return 0x06 ;

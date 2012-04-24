@@ -45,6 +45,7 @@ Mar 19, 2012 release 223	Arduino 1.0 compatible
 Apr 09, 2012 release 124	gText with multiplier for big text
 Apr 09, 2012 release 224	gText with multiplier for big text
 Apr 22, 2012 release 125	stability enhancement
+Apr 24, 2012 release 126	stability enhancement for Gallery
 
 
 proxySerial
@@ -93,6 +94,7 @@ Mar 19, 2012 release 209	Arduino 1.0 compatible
 Gallery
 Mar 13, 2012 release 101	initial release
 Mar 19, 2012 release 202	Arduino 1.0 compatible
+Apr 24, 2012 release 103	stability enhancement
 
 
 Full documentation with tutorial at

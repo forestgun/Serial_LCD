@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 101
+// Apr 24, 2012 release 103
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -95,10 +95,10 @@ uint8_t Gallery::begin(Serial_LCD * lcd0, String name) {
     // check .GCI and .DAT files
     a = _pscreen->findFile(_name + ".gci");
     if (a==0x15) return 0;
-    
+
     a = _pscreen->findFile(_name + ".dat");
     if (a==0x15) return 0;
-    
+
     a = _pscreen->openTextFileDelimiter(_name+".dat", '\n');
     if (a==0x15) return 0;
     

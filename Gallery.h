@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 101
+// Apr 24, 2012 release 103
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,15 +16,15 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define GALLERY_RELEASE 101
+#define GALLERY_RELEASE 103
 
 #include "WProgram.h"
 #include "Serial_LCD.h"
 #include "vector.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 125
-#error required SERIAL_LCD_RELEASE 125
+#if SERIAL_LCD_RELEASE < 126
+#error required SERIAL_LCD_RELEASE 126
 #endif
 
 
