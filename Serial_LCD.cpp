@@ -157,7 +157,6 @@ String Serial_LCD::WhoAmI() {
         if ( i==2 )  _checkedSoftwareVersion = c;
         if ( i==3 )  _maxX = _size(c, 3); // standard
         if ( i==4 )  _maxY = _size(c, 4); // standard
-        if ( i>4 ) Serial.print("? ? ?");
         
         i++;
     }
