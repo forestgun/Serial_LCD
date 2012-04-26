@@ -65,10 +65,56 @@ ProxySerial myPort(&Serial1);
 Serial_LCD myLCD( &myPort); 
 uint16_t x, y;
 uint32_t l;
-button b0, b3;
+button b1, b3;
+uint16_t result=0;
+uint16_t ui=255;
 uint16_t option=0;
 
 
+// menu declaration and size
+item myMenuItems[] = { 
+  {     
+    0x0000, "Menu 0"          }  
+  ,    
+  {     
+    0x1000, "Item 1"          }  
+  ,
+  {     
+    0x1100, "Item 11"         }  
+  ,
+  {     
+    0x1200, "Item 12"         }  
+  ,
+  {     
+    0x2000, "Item 2"          }  
+  ,
+  {     
+    0x2100, "Item 21"         }  
+  ,
+  {     
+    0x2110, "Item 211"        }  
+  ,
+  {     
+    0x2120, "Item 212"        }  
+  ,
+  {     
+    0x2121, "Item 2121"       }  
+  ,
+  {     
+    0x2122, "Item 2122"       }  
+  ,
+  {     
+    0x2200, "Item 22"         }  
+  ,
+  {     
+    0x2300, "Item 23"         }  
+  ,
+  {     
+    0x3000, "Item 3"          } 
+};
+
+uint8_t nItems = sizeof(myMenuItems) / sizeof(myMenuItems[0]);
+uint32_t sizeRAW;
 
 // Add setup code 
 void setup() {
@@ -132,14 +178,14 @@ void setup() {
   myLCD.gText(0, 100, "12345678901234567890123456789012345678901234567890123"); 
   myLCD.gText(0, 120, ftoa(myLCD.fontX(), 0, 8)); 
 
-  b0.dStringDefine(&myLCD,  60, 160, 60, 40, "Dialog", whiteColour, grayColour);
+  b1.dStringDefine(&myLCD, 120, 160, 60, 40, "Menu",   whiteColour, blueColour);
   b3.dStringDefine(&myLCD, 240, 160, 60, 40, "Stop",   whiteColour, redColour);
-  b0.enable(true);
+  b1.enable(true);
   b3.enable(true);
-  b0.draw();
+  b1.draw();
   b3.draw();
 
-  dLabel(&myLCD,  60, 120, 60, 40, ftoa(option), grayColour,  blackColour, 0, 2, 2);
+  dLabel(&myLCD, 120, 120, 60, 40, htoa(result), blueColour,  blackColour, 0, 2, 2);
 }
 
 uint8_t c;
@@ -155,28 +201,18 @@ void loop() {
     myLCD.gText(200, 0,  ftoa(x, 0, 5), greenColour); 
     myLCD.gText(200, 15, ftoa(y, 0, 5), redColour); 
 
-    if (b0.check()) {
-      option = dialog(&myLCD, "Options!", 2, whiteColour, myLCD.halfColour(grayColour), grayColour, \
-                            "First option text",  "First",  whiteColour, yellowColour, myLCD.halfColour(yellowColour), \
-                            "Second option text", "Second", whiteColour, greenColour,  myLCD.halfColour(greenColour), \
-                            "Third option text",  "Third",  whiteColour, redColour,    myLCD.halfColour(redColour));
-
-      dLabel(&myLCD, 60, 120, 60, 40, ftoa(option), grayColour, blackColour, 0, 2, 2);
-      Serial.print("\n dialog > \t");
-      Serial.print(option, HEX);
+    // menu
+    if (b1.check()) {
+      result = menu(&myLCD, myMenuItems, nItems, whiteColour, blueColour, myLCD.halfColour(blueColour));
+      dLabel(&myLCD, 120, 120, 60, 40, htoa(result), blueColour, blackColour, 0, 2, 2);
+      Serial.print("\n menu > \t");
+      Serial.print(result, HEX);
     }
     // quit
     else if (b3.check()) {
-      option = dialog(&myLCD, "Quit?", 3, whiteColour, myLCD.halfColour(grayColour), grayColour, \
-                       "Are you sure to quit?", "Yes", whiteColour, greenColour, myLCD.halfColour(greenColour), \
-                       "Please confirm.","No",whiteColour, redColour, myLCD.halfColour(redColour));
-      Serial.print("\n Quit? > \t");
-      Serial.print(option, DEC);
-      if ( 1 == option ) {
-        myLCD.off();
-        Serial.print("\n END");
-        while(true);
-      } 
+      myLCD.off();
+      Serial.print("\n END");
+      while(true);
     }
   }
 

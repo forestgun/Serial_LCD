@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 24, 2012 release 126
+// Apr 25, 2012 release 127
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -71,6 +71,13 @@ void Serial_LCD::begin(int8_t resetPin0) {
     setBacklight(true);  // backlight on
     setOrientation(3);
     
+    if ( _checkedSoftwareVersion>=0x21 ) {
+        _port->print('d');    // get display resolution
+        while (_port->available()<4);
+        _maxX = _port->read16();
+        _maxY = _port->read16();
+    }
+    
     clear();
     setFont(1);
 }
@@ -88,7 +95,7 @@ uint8_t Serial_LCD::setResolutionVGA(uint8_t b) {
     if (_checkedScreenType!=__uVGA__) return 0x15;   // VGA only
     
     _port->print('Y');
-    _port->print((uint8_t)0x0c);
+    _port->print((char)0x0c);
     _port->print((uint8_t)b);
     return nacAck();
 }   
@@ -106,14 +113,11 @@ uint8_t Serial_LCD::setSpeed(uint32_t speed) {
     
     delay(10);
     
-    if (a != 0x06) {
-        _port->print('Q');
-        _port->print((uint8_t)a); 
-        while (!_port->available());
-        a=_port->read();
+    _port->print('Q');
+    _port->print((uint8_t)a); 
+    while (!_port->available());
+    a=_port->read();
         
-    }
-    a=0x06;
     return a;
 }
 
@@ -128,7 +132,7 @@ uint16_t _size(uint8_t ui, uint8_t answer) {
         case 0x96 :         return 96; 
         case 0x32 :         return 320;
         case 0x24 :         return 240;
-        case 0xff :     
+        case 0xff :
             if (answer==3)  return 480;  // assumed, to be checked
             if (answer==4)  return 272;  // assumed, to be checked
         default   :         return 0;
@@ -156,8 +160,7 @@ String Serial_LCD::WhoAmI() {
         if ( i==1 )  _checkedHardwareVersion = c;
         if ( i==2 )  _checkedSoftwareVersion = c;
         if ( i==3 )  _maxX = _size(c, 3); // standard
-        if ( i==4 )  _maxY = _size(c, 4); // standard
-        
+        if ( i==4 )  _maxY = _size(c, 4); // standard        
         i++;
     }
     return s;
@@ -351,11 +354,7 @@ uint16_t Serial_LCD::readPixel(uint16_t x1, uint16_t y1) {
     _port->printXY(x1);
     _port->printXY(y1);
     
-    while (_port->available()<2);
-    uint16_t c=0;
-    c = _port->read() << 8;
-    c += _port->read();
-    return c;
+    return _port->read16();
 }
 
 
@@ -618,29 +617,30 @@ uint8_t Serial_LCD::initSD() {
         //      delay(1000);
         //    }
         
-        // Method 2 - Set Address Pointer of Card (RAW) - @41hex
-        _checkedFAT = true;
-        _port->print('@');
-        _port->print('A');
-        _port->print((uint8_t)0);
-        _port->print((uint8_t)0);
-        _port->print((uint8_t)0);
-        _port->print((uint8_t)0);
+//        // Method 2 - Set Address Pointer of Card (RAW) - @41hex
+//        _checkedFAT = true;
+//        _port->print('@');
+//        _port->print('A');
+//        _port->print((char)0x00);
+//        _port->print((char)0x00);
+//        _port->print((char)0x00);
+//        _port->print((char)0x00);
+//        
+//        delay(10);
+//        if ( nacAck()==0x06 ) _checkedRAW = true;
+//        _port->flush(); // if no RAW, 5 times error message 0x15, only one read
         
+// Method 3 - specific function
+        _port->print('z');
         delay(10);
-        if ( nacAck()==0x06 ) _checkedRAW = true;
-        _port->flush(); // if no RAW, 5 times error message 0x15, only one read
+        a = _port->read();
+        delay(10);
+        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
+        if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
+        if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
         
-        //        // Method 3 - specific function
-        //        _port->print('z');
-        //        a = _port->read();
-        //        delay(10);
-        //        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
-        //        if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
-        //        if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
-		//
-        //        //      if (bitRead(a, 4)) Serial.print("FAT partition is protected");Serial.print("\n");
-        //        //      if (bitRead(a, 3)) Serial.print("New Image format Enabled");Serial.print("\n");
+        //      if (bitRead(a, 4)) Serial.print("FAT partition is protected");Serial.print("\n");
+        //      if (bitRead(a, 3)) Serial.print("New Image format Enabled");Serial.print("\n");
         
         // Back to initial result
         a = 0x06;
@@ -655,8 +655,7 @@ boolean Serial_LCD::checkSD() {
 }
 boolean Serial_LCD::checkRAW() { 
     return false;
-    // write & read on RAW require investigation
-    //    return _checkedRAW; 
+    // return _checkedRAW; 
 }
 boolean Serial_LCD::checkFAT() { 
     return _checkedFAT; 
@@ -790,7 +789,7 @@ uint8_t Serial_LCD::writeStringFile(String filename, String text, uint8_t option
     if   (j > 0) {
         _port->print('@');
         _port->print('t');
-        _port->print((uint8_t)(0x00 + option));   // no hand-shaking
+        _port->print((char)(0x00 + option));   // no hand-shaking
         _port->print(filename);
         _port->print((char)0x00);
         _port->print((uint16_t)0x00);
@@ -860,9 +859,7 @@ uint8_t Serial_LCD::readTextFile(String filename, uint8_t bytes, void (*cbReadFi
     } 
     while ( !done );
     
-    while (_port->available()) { 
-        _port->read(); 
-    };
+    while (_port->available()) _port->read(); 
     
     return c;
 }
@@ -919,9 +916,7 @@ uint8_t Serial_LCD::readTextFileDelimiter(String filename, char delimiter, void 
     } 
     while ( !done );
     
-    while (_port->available()) { 
-        _port->read(); 
-    };
+    while (_port->available()) _port->read(); 
     
     return c;
 }
@@ -1089,8 +1084,8 @@ uint8_t Serial_LCD::readScreenFAT(String filename, uint16_t x1, uint16_t y1) {
 uint8_t Serial_LCD::playSoundSD(String filename, uint8_t option0) {   
     if ( !_checkedSD ) return 0x15;
     
-    _port->print((uint8_t)0x6c);
-    _port->print((uint8_t)option0);
+    _port->print((char)0x6c);
+    _port->print((char)option0);
     _port->print(filename);
     _port->print((char)0x00);
     
@@ -1158,9 +1153,8 @@ uint16_t Serial_LCD::reverseColour(uint16_t rgb) {
 
 uint8_t Serial_LCD::nacAck() {
     uint8_t b=0x00; // 0x06;
-    while (!(_port->available())) {     
-        delay(2);   
-    }
+    while (!(_port->available())) delay(2);   
+    
     b = _port->read();
     return b;
 }

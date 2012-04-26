@@ -1,6 +1,6 @@
 
 # 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-Arduino & chipKIT Library
+Arduino / chipKIT / Wiring Library
 
 © Rei VILO, 2010-2012
 

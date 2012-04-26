@@ -46,6 +46,7 @@ Apr 09, 2012 release 124	gText with multiplier for big text
 Apr 09, 2012 release 224	gText with multiplier for big text
 Apr 22, 2012 release 125	stability enhancement
 Apr 24, 2012 release 126	stability enhancement for Gallery
+Apr 25, 2012 release 127	4D Systems firmware 21
 
 
 proxySerial
@@ -59,6 +60,7 @@ Jan 28, 2012 release 105	new index
 Feb 01, 2012 release 106	ttoa time to string added
 Feb 12, 2012 release 106a	__AVR_ATmega328P__ __AVR_ATmega2560__ added
 Mar 19, 2012 release 207	Arduino 1.0 compatible
+Apr 25, 2012 release 107	4D Systems firmware 21
 
 
 button / GUI

@@ -63,11 +63,6 @@ ProxySerial myPort(&Serial1);
 
 // Define variables and constants
 Serial_LCD myLCD( &myPort); 
-uint16_t x, y;
-uint32_t l;
-button b0, b3;
-uint16_t option=0;
-
 
 
 // Add setup code 
@@ -120,8 +115,6 @@ void setup() {
   myLCD.setFont(0);
   myLCD.gText( 0, 210, myLCD.WhoAmI());
 
-  myLCD.setTouch(true);
-
   myLCD.setFont(1);
   myLCD.gText(0,  0, "         1         2         3         4");
   myLCD.gText(0, 20, "1234567890123456789012345678901234567890"); 
@@ -132,58 +125,20 @@ void setup() {
   myLCD.gText(0, 100, "12345678901234567890123456789012345678901234567890123"); 
   myLCD.gText(0, 120, ftoa(myLCD.fontX(), 0, 8)); 
 
-  b0.dStringDefine(&myLCD,  60, 160, 60, 40, "Dialog", whiteColour, grayColour);
-  b3.dStringDefine(&myLCD, 240, 160, 60, 40, "Stop",   whiteColour, redColour);
-  b0.enable(true);
-  b3.enable(true);
-  b0.draw();
-  b3.draw();
+  dLabel(&myLCD, 20, 30, 220, 25, "label left",   redColour,   yellowColour, 1, 0, 9);
+  dLabel(&myLCD, 20, 60, 220, 25, "label center", greenColour, violetColour, 0, 0, 9);
+  dLabel(&myLCD, 20, 90, 220, 25, "label right",  blueColour,  cyanColour,   2, 0, 9);
 
-  dLabel(&myLCD,  60, 120, 60, 40, ftoa(option), grayColour,  blackColour, 0, 2, 2);
+  delay(1000);
+  myLCD.off();
+  Serial.print("\n END");
+  while(true);
+
 }
-
-uint8_t c;
-boolean b=true;
 
 
 // Add loop code 
 void loop() {
-
-  if ( myLCD.getTouchActivity() ) {
-    myLCD.getTouchXY(x, y);
-    myLCD.setFont(0);
-    myLCD.gText(200, 0,  ftoa(x, 0, 5), greenColour); 
-    myLCD.gText(200, 15, ftoa(y, 0, 5), redColour); 
-
-    if (b0.check()) {
-      option = dialog(&myLCD, "Options!", 2, whiteColour, myLCD.halfColour(grayColour), grayColour, \
-                            "First option text",  "First",  whiteColour, yellowColour, myLCD.halfColour(yellowColour), \
-                            "Second option text", "Second", whiteColour, greenColour,  myLCD.halfColour(greenColour), \
-                            "Third option text",  "Third",  whiteColour, redColour,    myLCD.halfColour(redColour));
-
-      dLabel(&myLCD, 60, 120, 60, 40, ftoa(option), grayColour, blackColour, 0, 2, 2);
-      Serial.print("\n dialog > \t");
-      Serial.print(option, HEX);
-    }
-    // quit
-    else if (b3.check()) {
-      option = dialog(&myLCD, "Quit?", 3, whiteColour, myLCD.halfColour(grayColour), grayColour, \
-                       "Are you sure to quit?", "Yes", whiteColour, greenColour, myLCD.halfColour(greenColour), \
-                       "Please confirm.","No",whiteColour, redColour, myLCD.halfColour(redColour));
-      Serial.print("\n Quit? > \t");
-      Serial.print(option, DEC);
-      if ( 1 == option ) {
-        myLCD.off();
-        Serial.print("\n END");
-        while(true);
-      } 
-    }
-  }
-
-  myLCD.setFont(0);
-  myLCD.setFontSolid(true);
-  myLCD.gText( 250, 225, ftoa(millis()-l, 0, 6));
-  l=millis();
 
 }
 

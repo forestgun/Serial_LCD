@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 106
+// Apr 25, 2012 release 107
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define PROXYSERIAL_RELEASE 106
+#define PROXYSERIAL_RELEASE 107
 
 #include "WProgram.h"
 #include "Stream.h"
@@ -55,6 +55,7 @@ public:
     void print(String s);
     
     uint8_t read();
+    uint16_t read16();
     int8_t available();
     void flush();
     

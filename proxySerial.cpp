@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 09, 2012 release 106
+// Apr 25, 2012 release 107
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -175,6 +175,11 @@ void ProxySerial::print(String s) {
 uint8_t ProxySerial::read() { 
     _checkSpeed();  
     return _proxyPort->read(); 
+}
+uint16_t ProxySerial::read16() { 
+    _checkSpeed();  
+    while (_proxyPort->available()<2);
+    return (uint16_t)(_proxyPort->read() << 8) + _proxyPort->read(); 
 }
 int8_t ProxySerial::available() { 
     _checkSpeed();  

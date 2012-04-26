@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 24, 2012 release 126
+// Apr 25, 2012 release 127
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define SERIAL_LCD_RELEASE 126
+#define SERIAL_LCD_RELEASE 127
 
 #ifndef Serial_LCD_h
 #define Serial_LCD_h
@@ -25,32 +25,19 @@
 #include "proxySerial.h"
 
 // Test release
-#if PROXYSERIAL_RELEASE < 106
-#error required PROXYSERIAL_RELEASE 106
+#if PROXYSERIAL_RELEASE < 107
+#error required PROXYSERIAL_RELEASE 107
 #endif
 
 
 // Screen types
 //
-// 8-bits uLED=0, 16_bits uLCD=1, 16_bits uVGA=2
-#define __uOLED__ 0
-#define __uLCD__  1
-#define __uVGA__  2
+#define __uOLED__ 0 // 8-bits uLED=0
+#define __uLCD__  1 // 16-bits uLCD=1
+#define __uVGA__  2 // 16-bits uVGA=2
 
-
-// Colours                       Red  Green Blue
-//                               4321054321043210
-//const uint16_t blackColour   = 0b0000000000000000;
-//const uint16_t whiteColour   = 0b1111111111111111;
-//const uint16_t redColour     = 0b1111100000000000;
-//const uint16_t greenColour   = 0b0000011111100000;
-//const uint16_t blueColour    = 0b0000000000011111;
-//const uint16_t yellowColour  = 0b1111111111100000;
-//const uint16_t cyanColour    = 0b0000011111111111;
-//const uint16_t orangeColour  = 0b1111101111100000;
-//const uint16_t magentaColour = 0b1111100000001111;
-//const uint16_t violetColour  = 0b0111100000011111;
-//const uint16_t grayColour    = 0b0111101111101111;
+// Colours               Red  Green Blue
+//                       4321054321043210
 #define blackColour    0b0000000000000000
 #define whiteColour    0b1111111111111111
 #define redColour      0b1111100000000000
@@ -60,7 +47,7 @@
 #define cyanColour     0b0000011111111111
 #define orangeColour   0b1111101111100000
 #define magentaColour  0b1111100000001111
-#define violetColour   0b0111100000011111
+#define violetColour   0b1111100000011111
 #define grayColour     0b0111101111101111
 
 

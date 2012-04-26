@@ -1,42 +1,41 @@
-// 
-// μLCD-32PT(SGC) 3.2” Serial LCD Display Module
-// Arduino & chipKIT Library
 //
-// Example - see README.txt
-// © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// http://github.com/rei-vilo/Serial_LCD
+//  GUI_main.pde
+//  Sketch 
+//  ----------------------------------
+//  Developed with embedXcode
 //
-//
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
+//  Project GUI_main
+//  Created by Rei VILO on 25/04/12
+//  Copyright (c) 2012 http://embeddedcomputing.weebly.com
 //
 
+// Core library
+#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h" // — for Arduino 0023
+// #include  "Arduino.h" // — for Arduino 1.0
+#elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
+#elif defined(__AVR_ATmega644P__) // Wiring specific
+#include "Wiring.h"
+#elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
+#include "Energia.h"
+#endif
+
+// Include application, user and local libraries
+#include "Wire.h"
 #include "proxySerial.h"
 #include "Serial_LCD.h"
 #include "GUI.h"
 
 // test release
-#if GUI_RELEASE < 108
-#error required GUI_RELEASE 108
+#if GUI_RELEASE < 109
+#error required GUI_RELEASE 109
 #endif
 
-// Arduino Case : uncomment #include
-// #if defined(__AVR__)  || defined (__AVR_ATmega328P__) works!
-// ---
-//#include "NewSoftSerial.h"
-// ===
-
+// === Serial port choice ===
 
 // uncomment for I2C serial interface
-#define __I2C_Serial__
+//#define __I2C_Serial__
 
 // --- I2C Case -
 #if defined(__I2C_Serial__)
@@ -45,14 +44,14 @@
 I2C_Serial mySerial(0);
 ProxySerial myPort(&mySerial);
 
-// --- Arduino SoftwareSerial Case - Arduino only
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) || defined (__AVR_ATmega328P__)
+// --- Software Serial Case
+#elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328P__)
 #include "NewSoftSerial.h"
 NewSoftSerial mySerial(2, 3); // RX, TX
 ProxySerial myPort(&mySerial);
 
-// --- chipKIT HardwareSerial Case - chipKIT
-#elif defined(__PIC32MX__) 
+// --- Hardware Serial Case
+#elif defined(__PIC32MX__) || defined(__AVR_ATmega2560__)
 ProxySerial myPort(&Serial1);
 
 #else
@@ -62,134 +61,115 @@ ProxySerial myPort(&Serial1);
 // === End of Serial port choice ===
 
 
+// Define variables and constants
 Serial_LCD myLCD( &myPort); 
-
-
-
 uint16_t x, y;
 uint32_t l;
+button b3;
+uint16_t option=0;
 
-button b7;
 
-
-
+// Add setup code 
 void setup() {
-  Serial.begin(19200);
+  Serial.begin(9600);
   Serial.print("\n\n\n***\n");
 
   // === Serial port initialisation ===
 #if defined(__I2C_Serial__)
-  Serial.print("i2c\n");
+  Serial.print("i2c Serial\n");
   Wire.begin();
   mySerial.begin(9600);
 
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
-  Serial.print("avr\n");
+#elif defined(__AVR_ATmega328P__) 
+  Serial.print("Software Serial\n");
   mySerial.begin(9600);
 
-#elif defined(__PIC32MX__) 
-  Serial.print("chipKIT\n");
+#elif defined(__32MX320F128H__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega644P__)
+  Serial.print("Hardware Serial\n");
   Serial1.begin(9600);
 
 #endif 
   // === End of Serial port initialisation ===
 
-  myLCD.begin();
-  
-    // === Serial port speed change ===
-  myLCD.setSpeed(38400);
+  myLCD.begin(4);  // 9600 at start-up
+
+  // === Serial port speed change ===
+  if (false) {
+    myLCD.setSpeed(38400);
+
 #if defined(__I2C_Serial__)
-  mySerial.begin(38400);
+    mySerial.begin(38400);
 
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) || defined (__AVR_ATmega328P__)
-  mySerial.begin(38400);
+#elif defined(__AVR_ATmega328P__) 
+    mySerial.begin(38400);
 
-#elif defined(__PIC32MX__) 
-  Serial1.begin(38400);
+#elif defined(__PIC32MX__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega644P__)
+    Serial1.begin(38400);
 
 #endif 
+  }
   // === End of Serial port speed change ===
 
   myLCD.setOrientation(0x03);
-  myLCD.setPenSolid(true);
-  myLCD.setFontSolid(true);
 
+  myLCD.initSD();
+
+  myLCD.setPenSolid(true);
+  myLCD.setFontSolid(true);    
   myLCD.setFont(0);
-  myLCD.gText( 0, 210, 0xffff, myLCD.WhoAmI());
+  myLCD.gText( 0, 210, myLCD.WhoAmI());
 
   myLCD.setTouch(true);
 
-  l=millis();
-
-  uint16_t i=9;
-  b7.dDefine(&myLCD,  100, 100, 79, 59, setItem(1, "STOP"), myLCD.setColour(0xff, 0xff, 0xff), myLCD.setColour(0xff, 0x00, 0x00), myLCD.setColour(0x88, 0x00, 0x00), i);
-
-  b7.enable(true);
-  b7.draw();
-
-  //    myLCD.setFont(3);
-  //    myLCD.gText(0,  0, 0xffff, "         1         2    ");
-  //    myLCD.gText(0, 20, 0xffff, "12345678901234567890123456"); 
-  //    myLCD.gText(0, 60, 0xffff, ftoa(myLCD.fontX(), 0, 8)); 
-  //
-  //    myLCD.setFont(2);
-  //    myLCD.gText(0,  80, 0xffff, "         1         2         3         4");
-  //    myLCD.gText(0, 100, 0xffff, "1234567890123456789012345678901234567890"); 
-  //    myLCD.gText(0, 120, 0xffff, ftoa(myLCD.fontX(), 0, 8)); 
-
   myLCD.setFont(1);
-  myLCD.gText(0,  0, 0xffff, "         1         2         3         4");
-  myLCD.gText(0, 20, 0xffff, "1234567890123456789012345678901234567890"); 
-  myLCD.gText(0, 60, 0xffff, ftoa(myLCD.fontX(), 0, 8)); 
+  myLCD.gText(0,  0, "         1         2         3         4");
+  myLCD.gText(0, 20, "1234567890123456789012345678901234567890"); 
+  myLCD.gText(0, 60, ftoa(myLCD.fontX(), 0, 8)); 
 
   myLCD.setFont(0);
-  myLCD.gText(0,  80, 0xffff, "         1         2         3         4         5");
-  myLCD.gText(0, 100, 0xffff, "12345678901234567890123456789012345678901234567890123"); 
-  myLCD.gText(0, 120, 0xffff, ftoa(myLCD.fontX(), 0, 8)); 
+  myLCD.gText(0,  80, "         1         2         3         4         5");
+  myLCD.gText(0, 100, "12345678901234567890123456789012345678901234567890123"); 
+  myLCD.gText(0, 120, ftoa(myLCD.fontX(), 0, 8)); 
+
+  b3.dStringDefine(&myLCD, 240, 160, 60, 40, "Stop",   whiteColour, redColour);
+  b3.enable(true);
+  b3.draw();
 }
 
 uint8_t c;
+boolean b=true;
 
+
+// Add loop code 
 void loop() {
 
-  c=myLCD.getTouchActivity();
-
-  if (c>0) {
+  if ( myLCD.getTouchActivity() ) {
     myLCD.getTouchXY(x, y);
     myLCD.setFont(0);
-    myLCD.gText(200, 0, 0xffff, ftoa(x, 0, 5)); 
-    myLCD.gText(200, 15, 0xffff, ftoa(y, 0, 5)); 
+    myLCD.gText(200, 0,  ftoa(x, 0, 5), greenColour); 
+    myLCD.gText(200, 15, ftoa(y, 0, 5), redColour); 
 
     // quit
-    if (b7.check()) {
-      myLCD.off();
-      while(true);
+    if (b3.check()) {
+      option = dialog(&myLCD, "Quit?", 3, whiteColour, myLCD.halfColour(grayColour), grayColour, \
+                       "Are you sure to quit?", "Yes", whiteColour, greenColour, myLCD.halfColour(greenColour), \
+                       "Please confirm.","No",whiteColour, redColour, myLCD.halfColour(redColour));
+      Serial.print("\n Quit? > \t");
+      Serial.print(option, DEC);
+      if ( 1 == option ) {
+        myLCD.off();
+        Serial.print("\n END");
+        while(true);
+      } 
     }
-
-
-
   }
+
   myLCD.setFont(0);
   myLCD.setFontSolid(true);
-  myLCD.gText( 250, 225, 0xffff, String(millis()-l));
+  myLCD.gText( 250, 225, ftoa(millis()-l, 0, 6));
   l=millis();
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

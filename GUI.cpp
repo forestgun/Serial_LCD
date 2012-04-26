@@ -540,8 +540,8 @@ boolean slider(Serial_LCD * lcd0, uint16_t &value, uint16_t min, uint16_t max, u
         else a = _pscreen->dSaveScreenFAT( "slider.tmp", _x0, _y0, 60, _pscreen->maxY() );
     }
     
-        Serial.print("\r\n dSaveScreenRAW/FAT ");
-        Serial.print(a, HEX);
+    //    Serial.print("\r\n dSaveScreenRAW/FAT ");
+    //    Serial.print(a, HEX);
     
     // buttons
     button sb1;    
@@ -610,8 +610,8 @@ boolean slider(Serial_LCD * lcd0, uint16_t &value, uint16_t min, uint16_t max, u
         if ( _pscreen->checkRAW() ) a = _pscreen->readScreenRAW((uint32_t)0, _x0, _y0 );
         else a = _pscreen->readScreenFAT("slider.tmp", _x0, _y0 );
     }
-        Serial.print("\r\n readScreenRAW/FAT ");
-        Serial.print(a, HEX);
+    //    Serial.print("\r\n readScreenRAW/FAT ");
+    //    Serial.print(a, HEX);
     
     if ( answer==sb1.getIndex() ) {
         if ( oldY!=initialY ) value = map(oldY, _y0+40, _y0+40+k, min, max);
