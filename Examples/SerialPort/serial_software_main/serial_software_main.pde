@@ -1,30 +1,29 @@
 // 
-// μLCD-32PT(SGC) 3.2” Serial LCD Display Module
-// Arduino & chipKIT Library
+// 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
+// Arduino 0023 chipKIT MPIDE 0023 Library
+// ----------------------------------
+// Example
 //
-// Example - see README.txt
+// Apr 25, 2012 
+// See README.txt
+//
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// http://github.com/rei-vilo/Serial_LCD
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
-//
-
 #include "Serial_LCD.h"
 #include "proxySerial.h"
 #include "GUI.h"
 
 // test release
-#if GUI_RELEASE < 23
-#error required GUI_RELEASE 23
+#if GUI_RELEASE < 109
+#error required GUI_RELEASE 109
 #endif
 
 // === Serial port choice
@@ -100,7 +99,7 @@ void setup() {
   myLCD.setFontSolid(true);
 
   myLCD.setFont(0);
-  myLCD.gText( 0, 210, 0xffff, myLCD.WhoAmI());
+  myLCD.gText( 0, 210, myLCD.WhoAmI());
 
   myLCD.setTouch(true);
 
@@ -122,7 +121,7 @@ void setup() {
   }
 
   chrono1=millis();
-  myLCD.gText( 0, 180, 0xffff, ftoa((chrono1-chrono0), 0, 10 ));
+  myLCD.gText( 0, 180, ftoa((chrono1-chrono0), 0, 10 ));
 
   chrono0=millis();
 
@@ -134,7 +133,7 @@ void setup() {
   }
 
   chrono1=millis();
-  myLCD.gText( 160, 180, 0xffff, ftoa((chrono1-chrono0), 0, 10 ));
+  myLCD.gText( 160, 180, ftoa((chrono1-chrono0), 0, 10 ));
 
 }
 
@@ -147,8 +146,8 @@ void loop() {
   if (c>0) {
     myLCD.getTouchXY(x, y);
     myLCD.setFont(0);
-    myLCD.gText(200, 0, 0xffff, ftoa(x, 0, 5)); 
-    myLCD.gText(200, 15, 0xffff, ftoa(y, 0, 5)); 
+    myLCD.gText(200, 0, ftoa(x, 0, 5)); 
+    myLCD.gText(200, 15, ftoa(y, 0, 5)); 
 
     // quit
     if (b7.check()) {
@@ -161,7 +160,7 @@ void loop() {
   }
   myLCD.setFont(0);
   myLCD.setFontSolid(true);
-  myLCD.gText( 250, 225, 0xffff, ftoa(millis()-l, 0, 6));
+  myLCD.gText( 250, 225, ftoa(millis()-l, 0, 6));
   l=millis();
 }
 

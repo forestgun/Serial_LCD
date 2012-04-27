@@ -1,30 +1,28 @@
 // 
-// μLCD-32PT(SGC) 3.2” Serial LCD Display Module
-// Arduino & chipKIT Library
+// 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
+// Arduino 0023 chipKIT MPIDE 0023 Library
+// ----------------------------------
+// Example
 //
-// Example - see README.txt
+// Apr 25, 2012 
+// See README.txt
+//
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// http://github.com/rei-vilo/Serial_LCD
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
+//
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
-//
-//
-
-
 #include "proxySerial.h"
 #include "Serial_LCD.h"
 
 // test release
-#if SERIAL_LCD_RELEASE < 118
-#error required SERIAL_LCD_RELEASE 118
+#if SERIAL_LCD_RELEASE < 127
+#error required SERIAL_LCD_RELEASE 127
 #endif
 
 // === Serial port choice ===
@@ -113,7 +111,7 @@ delay(200);
 
 delay(100);
   Serial.print("\n gText \t");
-  aa=myLCD.gText(25, 25, 0xffff, "String");
+  aa=myLCD.gText(25, 25, "String");
   Serial.print(aa, DEC);
 
 delay(100);
