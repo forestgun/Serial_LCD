@@ -1,4 +1,3 @@
-
 # 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
 Arduino / chipKIT / Wiring Library
 
@@ -7,6 +6,12 @@ Arduino / chipKIT / Wiring Library
 ![IMG](http://i.creativecommons.org/l/by-nc-sa/3.0/nl/88x31.png) CC = BY NC SA
 
 http://embeddedcomputing.weebly.com/serial-lcd.html
+
+Please select the right branch
+
+* **master** = Arduino 0023, chipKIT MPIDE 0023, Wiring
+* **Arduino-1.0** = Arduino 1.0
+
 
 ## Links
 
