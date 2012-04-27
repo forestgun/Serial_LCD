@@ -118,7 +118,7 @@ void gClock::draw(uint8_t hour, uint8_t minute, uint8_t second) {
 		
 		_pscreen->line(_x0, _y0, sX, sY, _secondColour);
 		
-		_pscreen->setPenSolid(true);
+        _pscreen->setPenSolid(true);
 		_pscreen->circle(_x0, _y0, 3, _frontColour); 
 	}
 	_oldSecond = second;
@@ -225,6 +225,7 @@ void gYaw::draw(float degrees) {
 		_oldDegrees = degrees;
 	}
 	
+    _pscreen->setPenSolid(true);
 	_pscreen->circle(_x0, _y0, 2, _frontColour); 
 } 
 
@@ -343,6 +344,7 @@ void gPitch::draw(float degrees) {
 		}
 		
 		_pscreen->line(x1, y1, x2, y1, _frontColour);
+        _pscreen->setPenSolid(true);
 		_pscreen->circle(_x0, _y0, 2, _frontColour); 		
 		
 		_oldDegrees = degrees;
@@ -389,8 +391,6 @@ void gRoll::draw(float degrees) {
 		c = cos(radians) * 0.6 * _radius;
 		s = sin(radians) * 0.6 * _radius;
 		
-		_pscreen->setPenSolid(true);
-		
 		x1 = _x0 + (  c*(-1.0) + s*( 0.0) ) + 0.5;
 		y1 = _y0 + ( -s*(-1.0) + c*( 0.0) ) + 0.5;
 		x2 = _x0 + (  c*( 1.0) + s*( 0.0) ) + 0.5;
@@ -421,6 +421,7 @@ void gRoll::draw(float degrees) {
 		y2 = _y0 + ( -s*( 0.7) + c*( 0.3) ) + 0.5;
 		_pscreen->line(x1, y1, x2, y2, _valueColour);
 		
+		_pscreen->setPenSolid(true);
 		_pscreen->circle(_x0, _y0, 2, _frontColour); 
 		
 		_oldDegrees = degrees;
@@ -539,6 +540,7 @@ void gHistogram::draw(float value) {
 	} // continuity management
 	
 	// value
+    _pscreen->setPenSolid(true);    
 	_pscreen->dRectangle(_x0+_n, y, 2, 2, _valueColour);
 	
 	// min and max memory
@@ -577,7 +579,6 @@ void gHistogram::draw(float value) {
 		} // min
 	} // min and max memory
 	
-	;
 	_pscreen->setFont(0);
 	_pscreen->setFontSolid(true);
 	_pscreen->gText(_x0+3, _y0+2, ftoa(_valueMax, 1, 0), _frontColour);

@@ -126,6 +126,7 @@ uint8_t Gallery::number() {
 uint8_t Gallery::index() {
     return _index;
 }
+
 uint8_t Gallery::showNext() {
     _index ++;
     _index %= _gallery.size();

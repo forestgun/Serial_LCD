@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 22, 2012 release 109 - 19:45
+// Apr 28, 2012 release 110
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -313,20 +313,22 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
                 _pscreen->saveScreenRAW( sizeRAW*(i+0),  0, i*30,  0+79, i*30+29 ); // main
                 _pscreen->saveScreenRAW( sizeRAW*(i+8), 80, i*30, 80+79, i*30+29 ); // sub
             }
+            _pscreen->dSaveScreenRAW( sizeRAW*(i+9), 0, _pscreen->maxY()-60, 80, 60 ); // OK and Cancel
         } 
         else {
             for (i=0; i<8; i++) {
                 _pscreen->saveScreenFAT( "main" + String(i, HEX) + ".tmp",  0, i*30,  0+79, i*30+29 );
                 _pscreen->saveScreenFAT( "sub"  + String(i, HEX) + ".tmp", 80, i*30, 80+79, i*30+29 );
             }
+            _pscreen->dSaveScreenFAT( "low.tmp" , 0, _pscreen->maxY()-60, 80, 60 ); // OK and Cancel
         }
     }
     
     //    Serial.print("\r\n ! end of saveScreen... \n");
     
-    main[0].dDefine(      _pscreen, 0, 0*30, 79, 29, menuItem0[0], 0xffff, highColourMain0, _pscreen->halfColour(highColourMain0), 9);
-    main[6].dStringDefine(_pscreen, 0, 6*30, 79, 29, "Cancel",     0xffff, _pscreen->setColour(0xff, 0xff, 0x00), _pscreen->setColour(0x7f, 0x7f, 0x00), 9);
-    main[7].dStringDefine(_pscreen, 0, 7*30, 79, 29, "OK",         0xffff, _pscreen->setColour(0x00, 0xff, 0x00), _pscreen->setColour(0x00, 0x7f, 0x00), 9);
+    main[0].dDefine(      _pscreen, 0, 0*30, 79, 29, menuItem0[0], whiteColour, highColourMain0, _pscreen->halfColour(highColourMain0), 9);
+    main[6].dStringDefine(_pscreen, 0, _pscreen->maxY()-2*30, 79, 29, "Cancel", whiteColour, yellowColour, _pscreen->halfColour(yellowColour), 9);
+    main[7].dStringDefine(_pscreen, 0, _pscreen->maxY()-30, 79, 29, "OK", whiteColour, greenColour, _pscreen->halfColour(greenColour), 9);
     
     current = 0x0000;
     nMain=0;
@@ -456,13 +458,19 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
     
     // Restore initial screen
     if ( _pscreen->checkSD() ) {
-        if ( _pscreen->checkRAW() ) for (i=0; i<8; i++) {
-            _pscreen->readScreenRAW( sizeRAW*(i+0),  0, i*30 ); // main
-            _pscreen->readScreenRAW( sizeRAW*(i+8), 80, i*30 ); // sub
-        } 
-        else for (i=0; i<8; i++) {
-            _pscreen->readScreenFAT( "main" + String(i, HEX) + ".tmp",  0, i*30 );
-            _pscreen->readScreenFAT( "sub"  + String(i, HEX) + ".tmp", 80, i*30 );
+        if ( _pscreen->checkRAW() ) { 
+            for (i=0; i<8; i++) {
+                _pscreen->readScreenRAW( sizeRAW*(i+0),  0, i*30 ); // main
+                _pscreen->readScreenRAW( sizeRAW*(i+8), 80, i*30 ); // sub
+            } 
+            _pscreen->readScreenRAW( sizeRAW*(i+9), 0, _pscreen->maxY()-60 ); // OK and Cancel
+
+        } else {
+            for (i=0; i<8; i++) {
+                _pscreen->readScreenFAT( "main" + String(i, HEX) + ".tmp",  0, i*30 );
+                _pscreen->readScreenFAT( "sub"  + String(i, HEX) + ".tmp", 80, i*30 );
+            }
+            _pscreen->readScreenFAT( "low.tmp" , 0, _pscreen->maxY()-60 ); // OK and Cancel
         }
     }
     return current;

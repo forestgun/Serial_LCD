@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Library
 // ----------------------------------
 //
-// Apr 22, 2012 release 109
+// Apr 28, 2012 release 110
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define GUI_RELEASE 109
+#define GUI_RELEASE 110
 
 #include "WProgram.h"
 #include "Serial_LCD.h"
@@ -82,12 +82,11 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
 void dLabel(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour0=whiteColour, uint16_t backColour0=blackColour, uint8_t horizontal0=0, uint8_t vertical0=0, uint8_t size0=9);
 void  label(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, String text0, uint16_t textColour0=whiteColour, uint16_t backColour0=blackColour, uint8_t horizontal0=0, uint8_t vertical0=0, uint8_t size0=9);
 
-#endif
-
 // slider
 // output = true when OK, output = false when Cancel
 boolean slider(Serial_LCD * lcd0, uint16_t &value, uint16_t min=0, uint16_t max=511, uint16_t step=8, uint16_t minColour0=greenColour, uint16_t maxColour0=redColour, String okText0="OK", uint16_t okTextColour0=whiteColour, uint16_t okColour0=blueColour, String cancelText0="Cancel", uint16_t cancelTextColour0=whiteColour, uint16_t cancelColour0=yellowColour);
 
+#endif
 
 
 

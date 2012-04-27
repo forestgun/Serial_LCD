@@ -77,6 +77,7 @@ Jan 28, 2012 release 108	new index
 Feb 12, 2012 release 108a	__AVR_ATmega328P__ __AVR_ATmega2560__ added
 Mar 19, 2012 release 209	Arduino 1.0 compatible
 Apr 22, 2012 release 109	slider added
+Apr 28, 2012 release 110	better menu
 
 
 Graphics
