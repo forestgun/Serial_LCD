@@ -100,6 +100,10 @@ Mar 19, 2012 release 202	Arduino 1.0 compatible
 Apr 24, 2012 release 103	stability enhancement
 
 
+Energy
+Apr 28, 2012 release 101	initial release
+
+
 Full documentation with tutorial at
 	http://embeddedcomputing.weebly.com/serial-lcd.html
 
