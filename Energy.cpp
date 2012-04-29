@@ -8,7 +8,7 @@
 //  ----------------------------------
 //  Developed with embedXcode
 //
-// Apr 28, 2012 release 101
+// Apr 29, 2012 release 102
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -48,12 +48,13 @@ void Energy::begin(Serial_LCD * lcd0, uint32_t ms) {
     _state = true; // backlight on
 }
 
-void Energy::check(boolean b) {
+void Energy::check(boolean &b) {
     if ( b ) {
         _chrono = millis();
         if ( _state==false ) {
             _state = true;
-            _pscreen->setBacklight(true);   
+            _pscreen->setBacklight(true); 
+            b = 0;
         }
     } else if ( (_state==true) & (millis()>_chrono+_ms) ) {
         _state = false;

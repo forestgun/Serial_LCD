@@ -8,7 +8,7 @@
 //  ----------------------------------
 //  Developed with embedXcode
 //
-// Apr 28, 2012 release 101
+// Apr 29, 2012 release 102
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -51,7 +51,7 @@ class Energy {
 public:
     Energy();
     void begin(Serial_LCD * lcd0, uint32_t ms=1000);
-    void check(boolean b);
+    void check(boolean &b);
     
 private:
     Serial_LCD * _pscreen;

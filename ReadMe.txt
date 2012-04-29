@@ -102,6 +102,7 @@ Apr 24, 2012 release 103	stability enhancement
 
 Energy
 Apr 28, 2012 release 101	initial release
+Apr 29, 2012 release 102	wake-up clears touch flag
 
 
 Full documentation with tutorial at
