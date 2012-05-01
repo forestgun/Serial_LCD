@@ -47,6 +47,7 @@ Apr 09, 2012 release 224	gText with multiplier for big text
 Apr 22, 2012 release 125	stability enhancement
 Apr 24, 2012 release 126	stability enhancement for Gallery
 Apr 25, 2012 release 127	4D Systems firmware 21
+May 01, 2012 release 128	support for Wiring 1.0
 
 
 proxySerial
@@ -61,6 +62,7 @@ Feb 01, 2012 release 106	ttoa time to string added
 Feb 12, 2012 release 106a	__AVR_ATmega328P__ __AVR_ATmega2560__ added
 Mar 19, 2012 release 207	Arduino 1.0 compatible
 Apr 25, 2012 release 107	4D Systems firmware 21
+May 01, 2012 release 108	support for Wiring 1.0
 
 
 button / GUI
@@ -78,6 +80,7 @@ Feb 12, 2012 release 108a	__AVR_ATmega328P__ __AVR_ATmega2560__ added
 Mar 19, 2012 release 209	Arduino 1.0 compatible
 Apr 22, 2012 release 109	slider added
 Apr 28, 2012 release 110	better menu
+May 01, 2012 release 111	support for Wiring 1.0
 
 
 Graphics
@@ -92,17 +95,20 @@ Feb 12, 2012 release 106a	__AVR_ATmega328P__ added
 Feb 14, 2012 release 107	gauge graphic
 Feb 16, 2012 release 108	yaw, pitch, roll graphics
 Mar 19, 2012 release 209	Arduino 1.0 compatible
+May 01, 2012 release 109	support for Wiring 1.0
 
 
 Gallery
 Mar 13, 2012 release 101	initial release
 Mar 19, 2012 release 202	Arduino 1.0 compatible
 Apr 24, 2012 release 103	stability enhancement
+May 01, 2012 release 104	support for Wiring 1.0
 
 
 Energy
 Apr 28, 2012 release 101	initial release
 Apr 29, 2012 release 102	wake-up clears touch flag
+May 01, 2012 release 103	support for Wiring 1.0
 
 
 Full documentation with tutorial at

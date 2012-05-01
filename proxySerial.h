@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 25, 2012 release 107
+// May 01, 2012 release 108
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define PROXYSERIAL_RELEASE 107
+#define PROXYSERIAL_RELEASE 108
 
 #ifndef proxy_Serial_h
 #define proxy_Serial_h

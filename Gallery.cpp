@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 24, 2012 release 103
+// May 01, 2012 release 104
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -33,7 +33,7 @@
 
 // Other libraries
 #include "Serial_LCD.h"
-#include "vector.h"
+#include "vector_t.h"
 
 // Utilities
 //

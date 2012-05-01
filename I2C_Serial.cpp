@@ -19,11 +19,28 @@
 
 // ---------------- Functions
 
+
+void wire_send(uint8_t ui) {
+#if defined(__AVR_ATmega644P__) // Wiring specific
+    Wire.write(ui);
+#else
+    Wire.send(ui);
+#endif
+}
+
+uint8_t wire_receive() {
+#if defined(__AVR_ATmega644P__) // Wiring specific
+    return Wire.read();
+#else
+    return Wire.receive();
+#endif
+}
+
 // Writes value to address register on device
 static void _writeTo(uint8_t device, uint8_t address, uint8_t value) {
     Wire.beginTransmission(device); // start transmission to device 
-    Wire.send(address);             // send register address
-    Wire.send(value);               // send value to write
+    wire_send(address);             // send register address
+    wire_send(value);               // send value to write
     Wire.endTransmission();         // end transmission
 }
 
@@ -31,7 +48,7 @@ static void _writeTo(uint8_t device, uint8_t address, uint8_t value) {
 // Reads number uint8_ts starting from address register on device uint8_to buffer array
 static void _readFrom(uint8_t device, uint8_t address, uint8_t number, uint8_t buffer[]) {
     Wire.beginTransmission(device); // start transmission to device 
-    Wire.send(address);             // sends address to read from
+    wire_send(address);             // sends address to read from
     Wire.endTransmission();         // end transmission
     
     Wire.beginTransmission(device);    // start transmission to device
@@ -40,7 +57,7 @@ static void _readFrom(uint8_t device, uint8_t address, uint8_t number, uint8_t b
     uint8_t i = 0;
     while(Wire.available())       // device may send less than requested (abnormal)
     { 
-        buffer[i] = Wire.receive(); // receive a uint8_t
+        buffer[i] = wire_receive(); // receive a uint8_t
         i++;
     }
     Wire.endTransmission();       //end transmission
@@ -50,14 +67,14 @@ static void _readFrom(uint8_t device, uint8_t address, uint8_t number, uint8_t b
 
 static uint8_t _readByteFrom(int8_t device, uint8_t address) {
     Wire.beginTransmission(device); // start transmission to device  
-    Wire.send(address);             // send address to read from
+    wire_send(address);             // send address to read from
     Wire.endTransmission();         // end transmission
     
     Wire.beginTransmission(device); // start transmission to device
     Wire.requestFrom(device, 1);    // request 1 uint8_t from device
     
     while(!Wire.available());      // device may send less than requested (abnormal)
-    uint8_t b = Wire.receive();    // receive a uint8_t
+    uint8_t b = wire_receive();    // receive a uint8_t
     Wire.endTransmission();        // end transmission
     return b;
 }

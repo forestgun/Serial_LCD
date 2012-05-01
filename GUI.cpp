@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 28, 2012 release 110
+// May 01, 2012 release 111
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -516,8 +516,11 @@ void label(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
     }
     _pscreen->setFont(_size);
     _text = text0.substring(0, min(text0.length(), (x2-x1) / _pscreen->fontX()));
+#if defined(__AVR_ATmega644P__) // Wiring specific
+	_text.trim();
+#else
     _text = _text.trim();
-    
+#endif
     // horizontal 
     // default = 0 = center, 1 = left, 2 = right
     if (horizontal0==1) _xt = x1;

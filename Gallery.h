@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 24, 2012 release 103
+// May 01, 2012 release 104
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define GALLERY_RELEASE 103
+#define GALLERY_RELEASE 104
 
 #ifndef Gallery_h
 #define Gallery_h
@@ -35,11 +35,11 @@
 
 // Other libraries
 #include "Serial_LCD.h"
-#include "vector.h"
+#include "vector_t.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 126
-#error required SERIAL_LCD_RELEASE 126
+#if SERIAL_LCD_RELEASE < 128
+#error required SERIAL_LCD_RELEASE 128
 #endif
 
 class Gallery {
@@ -62,7 +62,7 @@ private:
     Serial_LCD * _pscreen;
     String _name;
     uint8_t _index;
-    Vector <image_t> _gallery;
+    Vector_t <image_t> _gallery;
 };
 
 

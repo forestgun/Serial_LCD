@@ -8,7 +8,7 @@
 //  ----------------------------------
 //  Developed with embedXcode
 //
-// Apr 29, 2012 release 102
+// May 01, 2012 release 103
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -22,7 +22,7 @@
 //
 //
 
-#define ENERGY_RELEASE 101
+#define ENERGY_RELEASE 103
 
 #ifndef Energy_h
 #define Energy_h
@@ -43,8 +43,8 @@
 #include "Serial_LCD.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 126
-#error required SERIAL_LCD_RELEASE 126
+#if SERIAL_LCD_RELEASE < 128
+#error required SERIAL_LCD_RELEASE 128
 #endif
 
 class Energy {

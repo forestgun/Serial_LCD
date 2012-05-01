@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 09, 2012 release 108
+// May 01, 2012 release 109
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -37,8 +37,8 @@
 #include "Serial_LCD.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 125
-#error required SERIAL_LCD_RELEASE 125
+#if SERIAL_LCD_RELEASE < 128
+#error required SERIAL_LCD_RELEASE 128
 #endif
 
 class gClock {

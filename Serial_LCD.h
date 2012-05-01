@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 25, 2012 release 127
+// May 01, 2012 release 128
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define SERIAL_LCD_RELEASE 127
+#define SERIAL_LCD_RELEASE 128
 
 #ifndef Serial_LCD_h
 #define Serial_LCD_h
@@ -37,8 +37,8 @@
 #include "proxySerial.h"
 
 // Test release
-#if PROXYSERIAL_RELEASE < 107
-#error required PROXYSERIAL_RELEASE 107
+#if PROXYSERIAL_RELEASE < 108
+#error required PROXYSERIAL_RELEASE 108
 #endif
 
 // Screen types

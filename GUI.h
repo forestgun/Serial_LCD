@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// Apr 28, 2012 release 110
+// May 01, 2012 release 111
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,7 +16,7 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define GUI_RELEASE 110
+#define GUI_RELEASE 111
 
 #ifndef GUI_h
 #define GUI_h
@@ -37,8 +37,8 @@
 #include "Serial_LCD.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 125
-#error required SERIAL_LCD_RELEASE 125
+#if SERIAL_LCD_RELEASE < 128
+#error required SERIAL_LCD_RELEASE 128
 #endif
 
 struct item {
