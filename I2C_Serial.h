@@ -2,7 +2,7 @@
 // SC16IS750 I2C slave bridge to serial
 // Arduino + chipKIT Library
 //
-// Apr 19, 2012 release 104
+// May 01, 2012 release 105
 // see README.txt
 //
 // © Rei VILO, 2010-2012
@@ -11,7 +11,7 @@
 //   http://github.com/rei-vilo/Serial_LCD
 //
 //
-#define I2C_SERIAL_RELEASE 104
+#define I2C_SERIAL_RELEASE 105
 
 #ifndef I2C_Serial_h
 #define I2C_Serial_h
