@@ -1,6 +1,6 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 0023 chipKIT MPIDE 0023 Library
+// Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
 // Apr 25, 2012 release 107
@@ -18,13 +18,25 @@
 //
 #define PROXYSERIAL_RELEASE 107
 
-#include "WProgram.h"
-#include "Stream.h"
-
-#define securityDelay 0
-
 #ifndef proxy_Serial_h
 #define proxy_Serial_h
+
+// Core library
+#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h" // — for Arduino 0023
+                      // #include  "Arduino.h" // — for Arduino 1.0
+#elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
+#include "WProgram.h"
+#elif defined(__AVR_ATmega644P__) // Wiring specific
+#include "Wiring.h"
+#elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
+#include "Energia.h"
+#endif
+
+// Other libraries
+#include "Stream.h"
+
+const uint32_t securityDelay = 0;
 
 // Utilities
 // float to string

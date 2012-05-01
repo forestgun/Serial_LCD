@@ -1,6 +1,6 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 0023 chipKIT MPIDE 0023 Library
+// Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
 // Apr 25, 2012 release 127
@@ -16,10 +16,23 @@
 //   http://www.4dsystems.com.au/
 //
 //
+// Core library
+#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h" // — for Arduino 0023
+                      // #include  "Arduino.h" // — for Arduino 1.0
+#elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
-#include "proxySerial.h"
+#elif defined(__AVR_ATmega644P__) // Wiring specific
+#include "Wiring.h"
+#elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
+#include "Energia.h"
+#endif
+
+// Library header
 #include "Serial_LCD.h"
 
+// Other libraries
+#include "proxySerial.h"
 
 // Constructor
 Serial_LCD::Serial_LCD(ProxySerial * port0) {
@@ -360,7 +373,6 @@ uint16_t Serial_LCD::readPixel(uint16_t x1, uint16_t y1) {
 
 uint8_t Serial_LCD::copyPaste(uint16_t xs, uint16_t ys, uint16_t xt, uint16_t yt, uint16_t dx, uint16_t dy) {
     if ( (xt+dx>maxX()) || (yt+dy>maxY()) ) return 0x15;
-    
     
     _port->print('c');
     

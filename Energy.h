@@ -1,6 +1,6 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 0023 chipKIT MPIDE 0023 Library
+// Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
 //  Energy.h 
@@ -22,6 +22,11 @@
 //
 //
 
+#define ENERGY_RELEASE 101
+
+#ifndef Energy_h
+#define Energy_h
+
 // Core library
 #if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
 #include "WProgram.h" // — for Arduino 0023
@@ -34,12 +39,7 @@
 #include "Energia.h"
 #endif
 
-#ifndef Energy_h
-#define Energy_h
-
-#define ENERGY_RELEASE 101
-
-#include "WProgram.h"
+// Other libraries
 #include "Serial_LCD.h"
 
 // Test release

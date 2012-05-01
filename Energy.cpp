@@ -1,6 +1,6 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 0023 chipKIT MPIDE 0023 Library
+// Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
 //  Energy.cpp 

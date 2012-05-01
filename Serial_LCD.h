@@ -1,6 +1,6 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 0023 chipKIT MPIDE 0023 Library
+// Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
 // Apr 25, 2012 release 127
@@ -21,7 +21,19 @@
 #ifndef Serial_LCD_h
 #define Serial_LCD_h
 
+// Core library
+#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h" // — for Arduino 0023
+                      // #include  "Arduino.h" // — for Arduino 1.0
+#elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
+#elif defined(__AVR_ATmega644P__) // Wiring specific
+#include "Wiring.h"
+#elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
+#include "Energia.h"
+#endif
+
+// Other libraries
 #include "proxySerial.h"
 
 // Test release
@@ -29,30 +41,29 @@
 #error required PROXYSERIAL_RELEASE 107
 #endif
 
-
 // Screen types
 //
-#define __uOLED__ 0 // 8-bits uLED=0
-#define __uLCD__  1 // 16-bits uLCD=1
-#define __uVGA__  2 // 16-bits uVGA=2
+const uint8_t __uOLED__ = 0; // 8-bits uLED=0
+const uint8_t __uLCD__  = 1; // 16-bits uLCD=1
+const uint8_t __uVGA__  = 2; // 16-bits uVGA=2
 
-// Colours               Red  Green Blue
-//                       4321054321043210
-#define blackColour    0b0000000000000000
-#define whiteColour    0b1111111111111111
-#define redColour      0b1111100000000000
-#define greenColour    0b0000011111100000
-#define blueColour     0b0000000000011111
-#define yellowColour   0b1111111111100000
-#define cyanColour     0b0000011111111111
-#define orangeColour   0b1111101111100000
-#define magentaColour  0b1111100000001111
-#define violetColour   0b1111100000011111
-#define grayColour     0b0111101111101111
+// Colours                      Red  Green Blue
+//                              4321054321043210
+const uint8_t blackColour   = 0b0000000000000000;
+const uint8_t whiteColour   = 0b1111111111111111;
+const uint8_t redColour     = 0b1111100000000000;
+const uint8_t greenColour   = 0b0000011111100000;
+const uint8_t blueColour    = 0b0000000000011111;
+const uint8_t yellowColour  = 0b1111111111100000;
+const uint8_t cyanColour    = 0b0000011111111111;
+const uint8_t orangeColour  = 0b1111101111100000;
+const uint8_t magentaColour = 0b1111100000001111;
+const uint8_t violetColour  = 0b1111100000011111;
+const uint8_t grayColour    = 0b0111101111101111;
 
 
 // Objects
-
+//
 class Serial_LCD {
 public:
     Serial_LCD(ProxySerial * port0); // uint8_t receivePin, uint8_t transmitPin); // constructor

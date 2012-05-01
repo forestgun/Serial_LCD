@@ -1,6 +1,6 @@
 // 
 // 4D Systems μLCD-μLED-μVGA Serial_LCD Library Suite
-// Arduino 0023 chipKIT MPIDE 0023 Library
+// Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
 // Apr 09, 2012 release 101
@@ -20,6 +20,11 @@
 //   http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1289151491
 //
 //
+
+#if defined(__AVR_ATmega644P__) // Wiring specific
+                                // Wiring has a standard vector library
+#else					        // other platforms requires this vector library
+
 #ifndef _VECTOR_H
 #define _VECTOR_H
 
@@ -84,4 +89,5 @@ private:
 
 #endif                          // _VECTOR_H not defined
 
+#endif							// other platforms requires this vector library
 
