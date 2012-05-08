@@ -41,9 +41,9 @@
 Energy::Energy() {
 }
 
-void Energy::begin(Serial_LCD * lcd0, uint32_t ms) {
+void Energy::begin(Serial_LCD * lcd0, uint32_t seconds) {
 	_pscreen = lcd0;
-    _ms = ms;
+    _ms = (uint32_t)seconds*1000;
     _chrono = millis();
     _state = true; // backlight on
 }

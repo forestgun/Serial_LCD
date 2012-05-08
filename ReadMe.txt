@@ -148,11 +148,13 @@ i2c      : Arduino . (pins 4 & 5) with library I2C_Serial
 SC16IS750 I2C slave bridge to serial
 Arduino + chipKIT Library
 
+I2C_Serial
 Oct 06, 2011 release 1	initial release
 Oct 10, 2011 release 2	Stream.h class based
 Oct 25, 2011 release 3	I2C address selection through parameter default=0, 1, 2 or 12
 Jan 28, 2012 release 103	new index
 Mar 19, 2012 release 204	Arduino 1.0 compatible
 Apr 19, 2012 release 104	I/O functions and reset
+May 01, 2012 release 105	support for Wiring 1.0
 
 

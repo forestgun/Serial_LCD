@@ -50,7 +50,7 @@
 class Energy {
 public:
     Energy();
-    void begin(Serial_LCD * lcd0, uint32_t ms=1000);
+    void begin(Serial_LCD * lcd0, uint32_t seconds=3);
     void check(boolean &b);
     
 private:

@@ -47,19 +47,19 @@ const uint8_t __uOLED__ = 0; // 8-bits uLED=0
 const uint8_t __uLCD__  = 1; // 16-bits uLCD=1
 const uint8_t __uVGA__  = 2; // 16-bits uVGA=2
 
-// Colours                      Red  Green Blue
-//                              4321054321043210
-const uint8_t blackColour   = 0b0000000000000000;
-const uint8_t whiteColour   = 0b1111111111111111;
-const uint8_t redColour     = 0b1111100000000000;
-const uint8_t greenColour   = 0b0000011111100000;
-const uint8_t blueColour    = 0b0000000000011111;
-const uint8_t yellowColour  = 0b1111111111100000;
-const uint8_t cyanColour    = 0b0000011111111111;
-const uint8_t orangeColour  = 0b1111101111100000;
-const uint8_t magentaColour = 0b1111100000001111;
-const uint8_t violetColour  = 0b1111100000011111;
-const uint8_t grayColour    = 0b0111101111101111;
+// Colours                       Red  Green Blue
+//                               4321054321043210
+const uint16_t blackColour   = 0b0000000000000000;
+const uint16_t whiteColour   = 0b1111111111111111;
+const uint16_t redColour     = 0b1111100000000000;
+const uint16_t greenColour   = 0b0000011111100000;
+const uint16_t blueColour    = 0b0000000000011111;
+const uint16_t yellowColour  = 0b1111111111100000;
+const uint16_t cyanColour    = 0b0000011111111111;
+const uint16_t orangeColour  = 0b1111101111100000;
+const uint16_t magentaColour = 0b1111100000001111;
+const uint16_t violetColour  = 0b1111100000011111;
+const uint16_t grayColour    = 0b0111101111101111;
 
 
 // Objects

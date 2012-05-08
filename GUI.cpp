@@ -493,7 +493,7 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
 
 // ---- label
 void dLabel(Serial_LCD  * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, String text0, uint16_t textColour0, uint16_t backColour0, uint8_t horizontal0, uint8_t vertical0, uint8_t size0) {
-    label(lcd0, x0, y0, x0+dx, y0+dy, text0, textColour0, backColour0, horizontal0, vertical0, size0);
+    label(lcd0, x0, y0, x0+dx-1, y0+dy-1, text0, textColour0, backColour0, horizontal0, vertical0, size0);
 }
 
 void label(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, String text0, uint16_t textColour0, uint16_t backColour0, uint8_t horizontal0, uint8_t vertical0, uint8_t size0) {
@@ -508,7 +508,7 @@ void label(Serial_LCD  * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y
             i--;
             _pscreen->setFont(i);
         } 
-        while ( (text0.length() * _pscreen->fontX() > (x2-x1) ) && (i>0) );
+        while ( ( (text0.length() * _pscreen->fontX() > (x2-x1)) || (_pscreen->fontY() > (y2-y1)) ) && (i>0) );
         _size = i;
     } 
     else {

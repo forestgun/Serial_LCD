@@ -447,11 +447,11 @@ gHistogram::gHistogram() {
 	;
 }
 
-void gHistogram::define(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, float valueMin, float valueMax, uint16_t lapse, uint16_t memory, uint16_t gridX, uint16_t gridY, boolean continous, uint16_t backColour, uint16_t frontColour, uint16_t gridColour, uint16_t valueColour, uint16_t minColour, uint16_t maxColour) {
+void gHistogram::define(Serial_LCD * lcd0, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, float valueMin, float valueMax, uint32_t lapse, uint16_t memory, uint16_t gridX, uint16_t gridY, boolean continous, uint16_t backColour, uint16_t frontColour, uint16_t gridColour, uint16_t valueColour, uint16_t minColour, uint16_t maxColour) {
     dDefine(lcd0, x1, y1, x2-x1, y2-y1, valueMin, valueMax, lapse, memory, gridX, gridY, continous, backColour, frontColour, gridColour, valueColour, minColour, maxColour);
 }
 
-void gHistogram::dDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, float valueMin, float valueMax, uint16_t lapse, uint16_t memory, uint16_t gridX, uint16_t gridY, boolean continous, uint16_t backColour, uint16_t frontColour, uint16_t gridColour, uint16_t valueColour, uint16_t minColour, uint16_t maxColour) {
+void gHistogram::dDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, float valueMin, float valueMax, uint32_t lapse, uint16_t memory, uint16_t gridX, uint16_t gridY, boolean continous, uint16_t backColour, uint16_t frontColour, uint16_t gridColour, uint16_t valueColour, uint16_t minColour, uint16_t maxColour) {
 	_pscreen = lcd0;
 	
 	_x0 = x0; 
@@ -465,7 +465,7 @@ void gHistogram::dDefine(Serial_LCD * lcd0, uint16_t x0, uint16_t y0, uint16_t d
 	_valueColour = valueColour;
 	_minColour   = minColour;
 	_maxColour   = maxColour;
-	
+    
 	_valueMin  = valueMin;
 	_valueMax  = valueMax;
 	_continous = continous;
