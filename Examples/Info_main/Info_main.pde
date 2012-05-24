@@ -3,18 +3,15 @@
 // Arduino & chipKIT Library
 //
 // Example - see README.txt
+//
 // © Rei VILO, 2010-2012
-// CC = BY NC SA
-// http://sites.google.com/site/vilorei/
-// http://github.com/rei-vilo/Serial_LCD
+//   CC = BY NC SA
+//   http://embeddedcomputing.weebly.com/serial-lcd.html
+//   http://github.com/rei-vilo/Serial_LCD
 //
-//
-// Based on
-// 4D LABS PICASO-SGC Command Set
-// Software Interface Specification
-// Document Date: 1st March 2011 
-// Document Revision: 6.0
-// http://www.4d-Labs.com
+// For 
+//   4D Systems Goldelox and Picaso SGC Command Set
+//   http://www.4dsystems.com.au/
 //
 //
 
@@ -25,8 +22,13 @@
 #include "proxySerial.h"
 
 // test release
-#if GUI_RELEASE < 27
-#error required GUI_RELEASE 27
+#if SERIAL_LCD_RELEASE < 129
+#error required SERIAL_LCD_RELEASE 129
+#endif
+
+// test release
+#if GUI_RELEASE < 111
+#error required GUI_RELEASE 111
 #endif
 
 // === Serial port choice ===
@@ -42,13 +44,13 @@ I2C_Serial mySerial(0);
 ProxySerial myPort(&mySerial);
 
 // --- Arduino SoftwareSerial Case - Arduino only
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
+#elif defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
 #include "NewSoftSerial.h"
 NewSoftSerial mySerial(2, 3); // RX, TX
 ProxySerial myPort(&mySerial);
 
 // --- chipKIT HardwareSerial Case - chipKIT
-#elif defined(__PIC32MX__) 
+#elif defined(__PIC32MX__) || defined (__AVR_ATmega2560__)
 ProxySerial myPort(&Serial1);
 
 #else
@@ -73,19 +75,34 @@ void show() {
   Serial.print("\n checkScreenType \t");
   switch (myLCD.checkScreenType()) {
   case 0:
-    dLabel(&myLCD, 0, 0, myLCD.maxX(), 40, "8-bits uOLED", 0xffff, 0x0000, 0, 0, 9);
-    Serial.print("8-bits uLED");
+    dLabel(&myLCD, 0, 0, myLCD.maxX(), 40, "uOLED", 0xffff, 0x0000, 0, 0, 9);
+    Serial.print("uOLED");
     break;
   case 1:
-    dLabel(&myLCD, 0, 0, myLCD.maxX(), 40, "16-bits uLCD", 0xffff, 0x0000, 0, 0, 9);
-    Serial.print("16-bits uLCD");
+    dLabel(&myLCD, 0, 0, myLCD.maxX()/2, 40, "uLCD", 0xffff, 0x0000, 0, 0, 9);
+    Serial.print("uLCD");
     break;
   case 2:
-    dLabel(&myLCD, 0, 0, myLCD.maxX(), 40, "16-bits uVGA", 0xffff, 0x0000, 0, 0, 9);
-    Serial.print("16-bits uVGA");
+    dLabel(&myLCD, 0, 0, myLCD.maxX()/2, 40, "uVGA", 0xffff, 0x0000, 0, 0, 9);
+    Serial.print("uVGA");
     break;
   default:
-    dLabel(&myLCD, 0, 0, myLCD.maxX(), 40, "Unknown", 0xffff, 0x0000, 0, 0, 9);
+    dLabel(&myLCD, 0, 0, myLCD.maxX()/2, 40, "Unknown", 0xffff, 0x0000, 0, 0, 9);
+  }
+
+
+  Serial.print("\n checkControllerType \t");
+  switch (myLCD.checkControllerType()) {
+  case 0:
+    dLabel(&myLCD, myLCD.maxX()/2, 0, myLCD.maxX()/2, 40, "8-bits Goldelox", 0xffff, 0x0000, 0, 0, 9);
+    Serial.print("8-bits Goldelox");
+    break;
+  case 1:
+    dLabel(&myLCD, myLCD.maxX()/2, 0, myLCD.maxX()/2, 40, "16-bits Picaso", 0xffff, 0x0000, 0, 0, 9);
+    Serial.print("16-bits Picaso");
+    break;
+  default:
+    dLabel(&myLCD, myLCD.maxX()/2, 0, myLCD.maxX()/2, 40, "Unknown", 0xffff, 0x0000, 0, 0, 9);
   }
 
   dLabel(&myLCD, 0, 40, myLCD.maxX()/2, 40, "Hardware: " + htoa(myLCD.checkHardwareVersion(), 2), 0xffff, myLCD.setColour(0x7f, 0x7f, 0x00), 0, 0, 9);
@@ -145,21 +162,21 @@ void show() {
 
 
 void setup() {
-  Serial.begin(19200);
+  Serial.begin(9600);
   Serial.print("\n\n\n***\n");
 
   // === Serial port initialisation ===
 #if defined(__I2C_Serial__)
-  Serial.print("i2c\n");
+  Serial.print("i2c Serial\n");
   Wire.begin();
   mySerial.begin(9600);
 
-#elif defined(__AVR__)  || defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
-  Serial.print("avr\n");
+#elif defined (__AVR_ATmega328P__) | defined (__AVR_ATmega328P__)
+  Serial.print("Software Serial \n");
   mySerial.begin(9600);
 
-#elif defined(__PIC32MX__) 
-  Serial.print("chipKIT\n");
+#elif defined(__PIC32MX__) || defined (__AVR_ATmega2560__)
+  Serial.print("Hardware Serial\n");
   Serial1.begin(9600);
 
 #endif 
@@ -187,6 +204,8 @@ void loop() {
       } 
       else if (myButton.check()) {
         myLCD.off();
+          Serial.print("\n END");
+
         while(true);
       }
     }
