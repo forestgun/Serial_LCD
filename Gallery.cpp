@@ -17,15 +17,16 @@
 //
 //
 // Core library
-#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
-#include "WProgram.h" // — for Arduino 0023
-                      // #include  "Arduino.h" // — for Arduino 1.0
+#if defined (__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h"	
 #elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
 #elif defined(__AVR_ATmega644P__) // Wiring specific
 #include "Wiring.h"
 #elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
 #include "Energia.h"
+#elif defined(MCU_STM32F103RB) || defined(MCU_STM32F103ZE) || defined(MCU_STM32F103CB) || defined(MCU_STM32F103RE) // Maple specific
+#include "WProgram.h"	
 #endif
 
 // Library header
@@ -109,10 +110,10 @@ uint8_t Gallery::begin(Serial_LCD * lcd0, String name) {
     // check .GCI and .DAT files
     a = _pscreen->findFile(_name + ".gci");
     if (a==0x15) return 0;
-
+    
     a = _pscreen->findFile(_name + ".dat");
     if (a==0x15) return 0;
-
+    
     a = _pscreen->openTextFileDelimiter(_name+".dat", '\n');
     if (a==0x15) return 0;
     

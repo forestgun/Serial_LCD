@@ -22,23 +22,24 @@
 #define Graphics_h
 
 // Core library
-#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
-#include "WProgram.h" // — for Arduino 0023
-                      // #include  "Arduino.h" // — for Arduino 1.0
+#if defined (__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h"	
 #elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
 #elif defined(__AVR_ATmega644P__) // Wiring specific
 #include "Wiring.h"
 #elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
 #include "Energia.h"
+#elif defined(MCU_STM32F103RB) || defined(MCU_STM32F103ZE) || defined(MCU_STM32F103CB) || defined(MCU_STM32F103RE) // Maple specific
+#include "WProgram.h"	
 #endif
 
 // Other libraries
 #include "Serial_LCD.h"
 
 // Test release
-#if SERIAL_LCD_RELEASE < 128
-#error required SERIAL_LCD_RELEASE 128
+#if SERIAL_LCD_RELEASE < 129
+#error required SERIAL_LCD_RELEASE 129
 #endif
 
 class gClock {

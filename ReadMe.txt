@@ -48,6 +48,7 @@ Apr 22, 2012 release 125	stability enhancement
 Apr 24, 2012 release 126	stability enhancement for Gallery
 Apr 25, 2012 release 127	4D Systems firmware 21
 May 01, 2012 release 128	support for Wiring 1.0
+May 23, 2012 release 129	graphic controller type based on screen size
 
 
 proxySerial

@@ -17,15 +17,16 @@
 //
 //
 // Core library
-#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
-#include "WProgram.h" // — for Arduino 0023
-                      // #include  "Arduino.h" // — for Arduino 1.0
+#if defined (__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h"	
 #elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
 #elif defined(__AVR_ATmega644P__) // Wiring specific
 #include "Wiring.h"
 #elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
 #include "Energia.h"
+#elif defined(MCU_STM32F103RB) || defined(MCU_STM32F103ZE) || defined(MCU_STM32F103CB) || defined(MCU_STM32F103RE) // Maple specific
+#include "WProgram.h"	
 #endif
 
 // Library header
@@ -478,7 +479,7 @@ uint16_t menu(Serial_LCD * lcd0, item menuItem0[], uint8_t nItems0, uint16_t tex
                 _pscreen->readScreenRAW( sizeRAW*(i+8), 80, i*30 ); // sub
             } 
             _pscreen->readScreenRAW( sizeRAW*(i+9), 0, _pscreen->maxY()-60 ); // OK and Cancel
-
+            
         } else {
             for (i=0; i<8; i++) {
                 _pscreen->readScreenFAT( "main" + String(i, HEX) + ".tmp",  0, i*30 );

@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// May 01, 2012 release 128
+// May 23, 2012 release 129
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -16,21 +16,22 @@
 //   http://www.4dsystems.com.au/
 //
 //
-#define SERIAL_LCD_RELEASE 128
+#define SERIAL_LCD_RELEASE 129
 
 #ifndef Serial_LCD_h
 #define Serial_LCD_h
 
 // Core library
-#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
-#include "WProgram.h" // — for Arduino 0023
-                      // #include  "Arduino.h" // — for Arduino 1.0
+#if defined (__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h"	
 #elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
 #elif defined(__AVR_ATmega644P__) // Wiring specific
 #include "Wiring.h"
 #elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
 #include "Energia.h"
+#elif defined(MCU_STM32F103RB) || defined(MCU_STM32F103ZE) || defined(MCU_STM32F103CB) || defined(MCU_STM32F103RE) // Maple specific
+#include "WProgram.h"	
 #endif
 
 // Other libraries
@@ -46,6 +47,8 @@
 const uint8_t __uOLED__ = 0; // 8-bits uLED=0
 const uint8_t __uLCD__  = 1; // 16-bits uLCD=1
 const uint8_t __uVGA__  = 2; // 16-bits uVGA=2
+const uint8_t __Goldelox__ = 0; // 8-bits Goldelox=0
+const uint8_t __Picaso__   = 1; // 16-bits Picaso=1
 
 // Colours                       Red  Green Blue
 //                               4321054321043210
@@ -84,6 +87,7 @@ public:
     uint8_t setVolume(uint8_t percent); // Set Volume - 76hex 
     uint8_t protectFAT(boolean b);  // Display Control Functions – 59hex
     uint8_t checkScreenType();
+    uint8_t checkControllerType();
     uint8_t checkHardwareVersion();
     uint8_t checkSoftwareVersion();
     
@@ -124,14 +128,13 @@ public:
     // Draw ASCII Character (graphics format) – 74hex 
     uint8_t tText(uint8_t x, uint8_t y, String s, uint16_t colour=whiteColour);  // Draw “String” of ASCII Text (text format) – 73hex 
     uint8_t gText(uint16_t x, uint16_t y, String s, uint16_t colour=whiteColour, uint8_t ix=1, uint8_t iy=1);    // Draw “String” of ASCII Text (graphics format) – 53hex 
-    
     // Draw Text Button – 62hex
     
     // 2.4 Touch Screen Commands
     // Touch screen must be enabled to be able to use the touch commands. 
     uint8_t getTouchActivity();   // Get Touch Coordinates - 6Fhex - 0 : No Touch Activity 1 : Touch Press 2 : Touch Release 3 : Touch Moving
     uint8_t getTouchXY(uint16_t &x, uint16_t &y);   // Get Touch Coordinates - 6Fhex 
-                                                    // Wait Until Touch - 77hex 
+    // Wait Until Touch - 77hex 
     uint8_t dDetectTouchRegion(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy);
     uint8_t detectTouchRegion(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2); // Detect Touch Region - 75hex
     
@@ -150,7 +153,6 @@ public:
     uint8_t saveScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);  // x1, y1 x2, y2: same coordinates as rectangle
     uint8_t readScreenRAW(uint32_t sector, uint16_t x1=0, uint16_t y1=0); // x1, y1: left-top coordinates
     uint32_t getSectors(uint16_t x, uint16_t y, uint16_t sizeSector=512); // sector = 512
-    
     // Display Video-Animation Clip from Card (RAW) - @56hex 
     // Run Script (4DSL) Program from Card (RAW) - @50hex
     
@@ -178,8 +180,7 @@ public:
     uint8_t saveScreenFAT(String filename, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);  // x1, y1 x2, y2: same coordinates as rectangle
     uint8_t readScreenFAT(String filename, uint16_t x1=0, uint16_t y1=0); // x1, y1: left-top coordinates
     uint8_t readScreenGCI(String filename, uint16_t x1=0, uint16_t y1=0, uint16_t msb2=0, uint16_t lsb2=0); // x1, y1: left-top coordinates; msb2:lsb2 icon sector address
-    uint8_t playSoundSD(String filename, uint8_t option0=0);  // Play Audio WAV file from Card (FAT) - @6Chex 
-    
+    uint8_t playSoundSD(String filename, uint8_t option0=0);  // Play Audio WAV file from Card (FAT) - @6Chex     
     // Run Script (4DSL) Program from Card (FAT) - @70hex
     
     // Utilities
@@ -199,6 +200,7 @@ private:
     
     int8_t _resetPin;
     uint8_t _checkedScreenType;
+    uint8_t _checkedControllerType;
     uint8_t _checkedHardwareVersion;
     uint8_t _checkedSoftwareVersion;
     boolean _checkedSD;

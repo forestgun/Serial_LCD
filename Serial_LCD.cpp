@@ -3,7 +3,7 @@
 // Arduino 0023 chipKIT MPIDE 0023 Wiring 1.0
 // ----------------------------------
 //
-// May 01, 2012 release 128
+// May 23, 2012 release 129
 // See README.txt
 //
 // © Rei VILO, 2010-2012
@@ -17,15 +17,16 @@
 //
 //
 // Core library
-#if defined (__AVR_ATmega328P__) || defined (__AVR_ATmega2560__) // Arduino specific
-#include "WProgram.h" // — for Arduino 0023
-                      // #include  "Arduino.h" // — for Arduino 1.0
+#if defined (__AVR_ATmega328P__) || defined(__AVR_ATmega2560__) // Arduino specific
+#include "WProgram.h"	
 #elif defined(__32MX320F128H__) || defined(__32MX795F512L__) // chipKIT specific 
 #include "WProgram.h"
 #elif defined(__AVR_ATmega644P__) // Wiring specific
 #include "Wiring.h"
 #elif defined(__MSP430G2452__) || defined(__MSP430G2553__) || defined(__MSP430G2231__) // LaunchPad specific
 #include "Energia.h"
+#elif defined(MCU_STM32F103RB) || defined(MCU_STM32F103ZE) || defined(MCU_STM32F103CB) || defined(MCU_STM32F103RE) // Maple specific
+#include "WProgram.h"	
 #endif
 
 // Library header
@@ -68,7 +69,7 @@ void Serial_LCD::begin(int8_t resetPin0) {
     
     _port->print('o');    // clear touch 
     _port->print((char)0x04);   // touch state
-                                //  _port->flush();
+    //  _port->flush();
     delay(100);
     while (_port->available()) _port->read();
     
@@ -110,6 +111,7 @@ uint8_t Serial_LCD::setResolutionVGA(uint8_t b) {
     _port->print('Y');
     _port->print((char)0x0c);
     _port->print((uint8_t)b);
+
     return nacAck();
 }   
 
@@ -121,7 +123,7 @@ uint8_t Serial_LCD::setSpeed(uint32_t speed) {
     else if (speed==(uint16_t) 38400) a=0x0a;  // max for Arduino
     else if (speed==(uint16_t) 57600) a=0x0c;
     else if (speed==(uint16_t)115200) a=0x0d;  // ok with chipKIT
-                                               //  else if (speed==(uint16_t)256000) a=0x0f;  
+    //  else if (speed==(uint16_t)256000) a=0x0f;  
     else return 0x15;
     
     delay(10);
@@ -130,7 +132,7 @@ uint8_t Serial_LCD::setSpeed(uint32_t speed) {
     _port->print((uint8_t)a); 
     while (!_port->available());
     a=_port->read();
-        
+    
     return a;
 }
 
@@ -166,16 +168,22 @@ String Serial_LCD::WhoAmI() {
         s += String(c, HEX);
         s += " ";
         
-        if ( i==0 )  {
-            _checkedScreenType = c; // 8-bits uLED=0, 16_bits uLCD=1, 16_bits uVGA=2
-            _port->setXY16( _checkedScreenType>__uOLED__ );
-        }
+        if ( i==0 )  _checkedScreenType = c; // uLED=0, uLCD=1, uVGA=2        
         if ( i==1 )  _checkedHardwareVersion = c;
         if ( i==2 )  _checkedSoftwareVersion = c;
         if ( i==3 )  _maxX = _size(c, 3); // standard
         if ( i==4 )  _maxY = _size(c, 4); // standard        
         i++;
     }
+    
+    // assumption: SOC based on screen size
+    if ( (_maxX>0xff) || (_maxY>0xff) ) {
+        _checkedControllerType = __Picaso__; // 16 bits
+    } else {
+        _checkedControllerType = __Goldelox__; // 8 bits
+    }
+    _port->setXY16( _checkedControllerType>__Goldelox__ );
+    
     return s;
 }
 
@@ -208,6 +216,7 @@ uint8_t Serial_LCD::setBacklight(boolean b) {
     _port->print('Y');
     _port->print((char)0x00);
     _port->print((b) ? (char)0x01 : (char)0x00);
+
     return nacAck();
 }   
 
@@ -217,6 +226,7 @@ uint8_t Serial_LCD::setDisplay(boolean b) {
     _port->print('Y');
     _port->print((char)0x01);
     _port->print(b ? (char)0x01 : (char)0x00);
+
     return nacAck();
 }
 
@@ -286,7 +296,6 @@ uint8_t Serial_LCD::setVolume(uint8_t percent) { // Set Volume - 76hex
 // Graphics
 uint8_t Serial_LCD::circle(uint16_t x1, uint16_t y1, uint16_t radius, uint16_t colour) {
     _port->print('C');
-    
     _port->printXY(x1);
     _port->printXY(y1);
     _port->printXY(radius);
@@ -301,8 +310,7 @@ uint8_t Serial_LCD::dRectangle(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t d
 }
 
 uint8_t Serial_LCD::rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour) {
-    _port->print('r');
-    
+    _port->print('r');    
     _port->printXY(x1);
     _port->printXY(y1);
     _port->printXY(x2);
@@ -313,8 +321,7 @@ uint8_t Serial_LCD::rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2
 }  
 
 uint8_t Serial_LCD::ellipse(uint16_t x, uint16_t y, uint16_t rx, uint16_t ry, uint16_t colour) {
-    _port->print('e');
-    
+    _port->print('e');    
     _port->printXY(x);
     _port->printXY(y);
     _port->printXY(rx);
@@ -330,7 +337,6 @@ uint8_t Serial_LCD::dLine(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy, ui
 
 uint8_t Serial_LCD::line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour) {
     _port->print('L');
-    
     _port->printXY((uint16_t)x1);
     _port->printXY((uint16_t)y1);
     _port->printXY((uint16_t)x2);
@@ -343,7 +349,6 @@ uint8_t Serial_LCD::line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uin
 // 2011-06-24 release 3 - setBackGroundColour added
 uint8_t Serial_LCD::setBackGroundColour(uint16_t colour) { 
     _port->print('K');
-    
     _port->print(colour);
     
     return nacAck();
@@ -351,8 +356,7 @@ uint8_t Serial_LCD::setBackGroundColour(uint16_t colour) {
 
 
 uint8_t Serial_LCD::point(uint16_t x1, uint16_t y1, uint16_t colour) {
-    _port->print('P');
-    
+    _port->print('P');    
     _port->printXY(x1);
     _port->printXY(y1);
     _port->print(colour);
@@ -363,7 +367,6 @@ uint8_t Serial_LCD::point(uint16_t x1, uint16_t y1, uint16_t colour) {
 
 uint16_t Serial_LCD::readPixel(uint16_t x1, uint16_t y1) {
     _port->print('R');
-    
     _port->printXY(x1);
     _port->printXY(y1);
     
@@ -375,7 +378,6 @@ uint8_t Serial_LCD::copyPaste(uint16_t xs, uint16_t ys, uint16_t xt, uint16_t yt
     if ( (xt+dx>maxX()) || (yt+dy>maxY()) ) return 0x15;
     
     _port->print('c');
-    
     _port->printXY(xs);
     _port->printXY(ys);
     _port->printXY(xt);
@@ -391,8 +393,7 @@ uint8_t Serial_LCD::triangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2,
     boolean b=true;
     
     // Graham Scan + Andrew's Monotone Chain Algorithm
-    // 1. Sort by ascending x
-    
+    // 1. Sort by ascending x    
     while (b) {  // required x2 < x1 : x3 > x2 : y2 > y1 : y3 > y1
         b=false;
         if (!b && (x1>x2)) { 
@@ -466,7 +467,7 @@ uint8_t Serial_LCD::setFont(uint8_t b) {
     // 03hex : 12x16 largest size font set - not on uOLED
     
     if ( b>3 ) b=3;
-    if ( (b>2) && (_checkedScreenType==__uOLED__) ) b=2;
+    if ( (b>2) && (_checkedScreenType==__Goldelox__) ) b=2;
     
     _port->print('F');
     _port->print(b);
@@ -584,6 +585,7 @@ uint8_t Serial_LCD::getTouchXY(uint16_t &x, uint16_t &y) {
 
 
 uint8_t Serial_LCD::dDetectTouchRegion(uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy) {
+    if (_checkedScreenType!=__uLCD__) return 0x15;   // only uLCD 
     return Serial_LCD::detectTouchRegion(x0, y0, x0+dx-1, y0+dy-1);
 }
 
@@ -629,25 +631,25 @@ uint8_t Serial_LCD::initSD() {
         //      delay(1000);
         //    }
         
-//        // Method 2 - Set Address Pointer of Card (RAW) - @41hex
-//        _checkedFAT = true;
-//        _port->print('@');
-//        _port->print('A');
-//        _port->print((char)0x00);
-//        _port->print((char)0x00);
-//        _port->print((char)0x00);
-//        _port->print((char)0x00);
-//        
-//        delay(10);
-//        if ( nacAck()==0x06 ) _checkedRAW = true;
-//        _port->flush(); // if no RAW, 5 times error message 0x15, only one read
+        //        // Method 2 - Set Address Pointer of Card (RAW) - @41hex
+        //        _checkedFAT = true;
+        //        _port->print('@');
+        //        _port->print('A');
+        //        _port->print((char)0x00);
+        //        _port->print((char)0x00);
+        //        _port->print((char)0x00);
+        //        _port->print((char)0x00);
+        //        
+        //        delay(10);
+        //        if ( nacAck()==0x06 ) _checkedRAW = true;
+        //        _port->flush(); // if no RAW, 5 times error message 0x15, only one read
         
-// Method 3 - specific function
+        // Method 3 - specific function
         _port->print('z');
         delay(10);
         a = _port->read();
         delay(10);
-        if (bitRead(a, 7)) _checkedSD  = true;  // uSD card present
+        if (bitRead(a, 7)) _checkedSD  = true; // uSD card present
         if (bitRead(a, 6)) _checkedFAT = true; // FAT partition present
         if (bitRead(a, 5)) _checkedRAW = true; // RAW partition present
         
@@ -674,7 +676,7 @@ boolean Serial_LCD::checkFAT() {
 }
 
 uint8_t Serial_LCD::protectFAT(boolean b) {
-    if (_checkedScreenType==__uOLED__) return 0x15;   // exclude uOLED  
+    if (_checkedScreenType==__Goldelox__) return 0x15;   // exclude Goldelox  
     
     _port->print('Y');
     _port->print((char)0x08);
@@ -685,6 +687,9 @@ uint8_t Serial_LCD::protectFAT(boolean b) {
 
 uint8_t Serial_LCD::checkScreenType() {
     return _checkedScreenType;
+}
+uint8_t Serial_LCD::checkControllerType() {
+    return _checkedControllerType;
 }
 uint8_t Serial_LCD::checkHardwareVersion() {
     return _checkedHardwareVersion;
@@ -708,7 +713,6 @@ uint8_t Serial_LCD::saveScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1, uin
 // x0, y0 and width and height  
 uint8_t Serial_LCD::dSaveScreenRAW(uint32_t sector, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy) {
     if ( !_checkedSD ) return 0x15;
-    if (_checkedScreenType==__uOLED__) return 0x15;   //  exclude uOLED
     
     //    Serial.print("\r\n dSaveScreenRAW \t");
     //    Serial.print(x1, DEC);
@@ -734,7 +738,6 @@ uint8_t Serial_LCD::dSaveScreenRAW(uint32_t sector, uint16_t x0, uint16_t y0, ui
 // x1, y1: left-top coordinates
 // no coordinates: 0, 0 for full screen
 uint8_t Serial_LCD::readScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1) {
-    if (_checkedScreenType==__uOLED__) return 0x15;   //  exclude uOLED
     if ( !_checkedSD ) return 0x15;
     
     //    Serial.print("\r\n readScreenRAW \t");
@@ -765,6 +768,7 @@ uint8_t Serial_LCD::readScreenRAW(uint32_t sector, uint16_t x1, uint16_t y1) {
 // Write File to Card (FAT) - @74hex 
 // default option = 0
 uint8_t Serial_LCD::writeStringFile(String filename, String text, uint8_t option) { 
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     String s;
     uint8_t a;
     uint8_t j;
@@ -816,6 +820,7 @@ uint8_t Serial_LCD::writeStringFile(String filename, String text, uint8_t option
 }
 
 uint8_t Serial_LCD::appendStringFile(String filename, String text) { 
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     return writeStringFile(filename, text, 0x80);  // append option
 }
 
@@ -826,6 +831,7 @@ uint8_t Serial_LCD::appendStringFile(String filename, String text) {
 //  bytes      - The number of bytes to get each time (0=all, not a good idea when filesize > 512b)
 //  cbReadFile - Callback function that is called every time data is received so a parser do its job.
 uint8_t Serial_LCD::readTextFile(String filename, uint8_t bytes, void (*cbReadFile)(String text)) {  
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     if ( !_checkedSD ) return 0x15;
     
     _port->print('@');
@@ -878,6 +884,7 @@ uint8_t Serial_LCD::readTextFile(String filename, uint8_t bytes, void (*cbReadFi
 
 
 uint8_t Serial_LCD::readTextFileDelimiter(String filename, char delimiter, void (*cbReadFile)(String text)) {
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     if ( !_checkedSD ) return 0x15;
     
     _port->print('@');
@@ -935,6 +942,7 @@ uint8_t Serial_LCD::readTextFileDelimiter(String filename, char delimiter, void 
 
 
 uint8_t Serial_LCD::openTextFileDelimiter(String filename, char delimeter) {
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     if ( !_checkedSD ) return 0x15;
     
     _delimeter = delimeter;
@@ -952,11 +960,12 @@ uint8_t Serial_LCD::openTextFileDelimiter(String filename, char delimeter) {
         _fileSize <<= 4;
         _fileSize |= _port->read();
     }
-
+    
     return 0x06;
 }
 
 boolean Serial_LCD::nextTextFileDelimiter(String * result) { // false = end
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     uint8_t i = 0;
     char c = 0;
     String s = "";
@@ -999,6 +1008,7 @@ boolean Serial_LCD::nextTextFileDelimiter(String * result) { // false = end
 
 // Erase file from Card (FAT) - @65hex 
 uint8_t Serial_LCD::eraseFile(String filename) {  
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     uint8_t a;
     if ( !_checkedSD ) return 0x15;
     
@@ -1013,6 +1023,7 @@ uint8_t Serial_LCD::eraseFile(String filename) {
 
 // List Directory from Card (FAT) - @64hex
 uint8_t Serial_LCD::findFile(String filename) {  
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     if ( !_checkedSD ) return 0x15;
     
     _port->print('@');
@@ -1041,16 +1052,19 @@ uint8_t Serial_LCD::findFile(String filename) {
 
 
 uint8_t Serial_LCD::saveScreenFAT(String filename) {    
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     return dSaveScreenFAT(filename, 0, 0, maxX(), maxY());
 }
 
 // Screen Copy-Save to Card (FAT) - @63hex 
 // x1, y1 x2, y2: same coordinates as rectangle
 uint8_t Serial_LCD::saveScreenFAT(String filename, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {    
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     return dSaveScreenFAT(filename, x1, y1, x2-x1+1, y2-y1+1);
 }
 
 uint8_t Serial_LCD::dSaveScreenFAT(String filename, uint16_t x0, uint16_t y0, uint16_t dx, uint16_t dy) {    
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     uint8_t a;
     if ( !_checkedSD ) return 0x15;
     
@@ -1071,6 +1085,7 @@ uint8_t Serial_LCD::dSaveScreenFAT(String filename, uint16_t x0, uint16_t y0, ui
 // x1, y1: left-top coordinates
 // no coordinates: 0, 0 for full screen
 uint8_t Serial_LCD::readScreenFAT(String filename, uint16_t x1, uint16_t y1) {   
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     if ( !_checkedSD ) return 0x15;
     
     //    Serial.print("\n readScreenFAT \t");
@@ -1094,6 +1109,7 @@ uint8_t Serial_LCD::readScreenFAT(String filename, uint16_t x1, uint16_t y1) {
 
 // Play Audio WAV file from Card (FAT) - @6Chex 
 uint8_t Serial_LCD::playSoundSD(String filename, uint8_t option0) {   
+    if (_checkedScreenType==__Goldelox__) return 0x15;   //  exclude Goldelox
     if ( !_checkedSD ) return 0x15;
     
     _port->print((char)0x6c);
